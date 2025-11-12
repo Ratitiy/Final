@@ -19,10 +19,12 @@ public class PlayerInteractor : MonoBehaviour
 
     void Update()
     {
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.7f, 0.7f, 0));
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        Debug.DrawRay(ray.origin, ray.direction * interactDistance, Color.green);
 
         if (Physics.SphereCast(ray, sphereRadius, out RaycastHit hit, interactDistance, interactableLayer))
         {
+            Debug.Log("Ray hit: " + hit.collider.name);
             var target = hit.collider.GetComponentInParent<IInteractable>();
             if (target != null)
             {
@@ -31,17 +33,22 @@ public class PlayerInteractor : MonoBehaviour
                     current?.OnLoseFocus();
                     current = target;
                     current.OnFocus();
+                    Debug.Log("Focused on: " + current);
                 }
                 ShowPrompt(current.GetPrompt());
 
                 if (Input.GetKeyDown(KeyCode.E))
+                {
+                    Debug.Log("Pressed E on: " + current);
                     current.Interact(gameObject);
+                }
                 return;
             }
         }
 
         if (current != null)
         {
+            Debug.Log("Lost focus on: " + current);
             current.OnLoseFocus();
             current = null;
         }
