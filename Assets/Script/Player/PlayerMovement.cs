@@ -2,7 +2,8 @@
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5f;
+    public float speed = 1.8f;
+    public float runSpeed = 3.6f;
     public float rotationSpeed = 720f;
     private CharacterController controller;
 
@@ -28,13 +29,26 @@ public class PlayerMovement : MonoBehaviour
         move = Camera.main.transform.TransformDirection(move);
         move.y = 0f;
 
-        controller.SimpleMove(move.normalized * speed);
+        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+
+        float currentSpeed = isRunning ? runSpeed : speed;
+        controller.SimpleMove(move.normalized * currentSpeed);
+
+        // ส่งค่าให้ Animator
+        anim.SetBool("isWalking", move.magnitude > 0.1f && !isRunning);
+        anim.SetBool("isRunning", move.magnitude > 0.1f && isRunning);
+
+
+
 
         if (move.magnitude > 0.1f)
         {
             Quaternion toRotation = Quaternion.LookRotation(move, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
         }
+
+        
+
 
         CheckFront();
         if (Input.GetKeyDown(KeyCode.Escape))
