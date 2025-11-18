@@ -46,7 +46,7 @@ public class PlayerMovement : MonoBehaviour
     void CheckFront()
     {
         RaycastHit hit;
-        Vector3 origin = transform.position + Vector3.up * 1f;
+        Vector3 origin = transform.position + Vector3.up * 0f;
         Vector3 direction = transform.forward;
         bool isHit = Physics.SphereCast(origin, detectRadius, direction, out hit, detectDistance, detectLayer);
         Color rayColor = isHit ? Color.red : Color.green;
