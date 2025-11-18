@@ -7,10 +7,7 @@ public class PlayerMovement : MonoBehaviour
     public float rotationSpeed = 720f;
     private CharacterController controller;
 
-    [Header("Detection Settings")]
-    public float detectRadius = 0.5f;
-    public float detectDistance = 2f;
-    public LayerMask detectLayer;
+   
     public Animator anim;
 
     float idleTimer = 0f;
@@ -57,13 +54,6 @@ public class PlayerMovement : MonoBehaviour
 
         
 
-
-        CheckFront();
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-        }
         
         //สุ่มท่า idle
         if (move.magnitude < 0.1f)
@@ -88,18 +78,5 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void CheckFront()
-    {
-        RaycastHit hit;
-        Vector3 origin = transform.position + Vector3.up * 1f;
-        Vector3 direction = transform.forward;
-        bool isHit = Physics.SphereCast(origin, detectRadius, direction, out hit, detectDistance, detectLayer);
-        Color rayColor = isHit ? Color.red : Color.green;
-        Debug.DrawRay(origin, direction * detectDistance, rayColor);
-        if (isHit)
-        {
-            Debug.DrawLine(origin, hit.point, Color.yellow);
-            Debug.Log("เจอวัตถุด้านหน้า: " + hit.collider.name);
-        }
-    }
+   
 }
