@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     public float detectRadius = 0.5f;
     public float detectDistance = 2f;
     public LayerMask detectLayer;
+    public Animator anim;
 
     void Start()
     {
