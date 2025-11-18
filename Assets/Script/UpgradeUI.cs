@@ -39,6 +39,7 @@ public class UpgradeUI : MonoBehaviour
 
         if (playerObj == null)
             Debug.Log("playerObj IS NULL!!!");
+        
         panel.SetActive(false);
 
         
