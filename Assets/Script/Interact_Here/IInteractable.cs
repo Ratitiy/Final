@@ -2,5 +2,7 @@
 
 public interface IInteractable
 {
-    void Interact();
+    string GetPrompt();
+    void Interact(GameObject player);
 }
+

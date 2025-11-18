@@ -5,21 +5,33 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 1.8f;
     public float runSpeed = 5f;
     public float rotationSpeed = 720f;
-    private CharacterController controller;
 
-   
+    private CharacterController controller;
     public Animator anim;
 
+    public bool uiOpened = false;    // UI เปิด?
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
+
+        // ตอนเริ่มปิดเมาส์
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked; 
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
     {
+        
+        if (uiOpened)
+        {
+            controller.SimpleMove(Vector3.zero);
+            anim.SetBool("isWalking", false);
+            anim.SetBool("isRunning", false);
+            return;
+        }
+
+        
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
@@ -28,30 +40,20 @@ public class PlayerMovement : MonoBehaviour
         move.y = 0f;
 
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
-
         float currentSpeed = isRunning ? runSpeed : speed;
         controller.SimpleMove(move.normalized * currentSpeed);
 
-
         anim.SetBool("isWalking", move.magnitude > 0.1f);
-
         anim.SetBool("isRunning", isRunning && move.magnitude > 0.1f);
-
-
-
-
 
         if (move.magnitude > 0.1f)
         {
             Quaternion toRotation = Quaternion.LookRotation(move, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                toRotation,
+                rotationSpeed * Time.deltaTime
+            );
         }
-
-
-
-
-
     }
-
-   
 }

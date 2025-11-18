@@ -1,45 +1,71 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    public Transform InteractPosition;
-
-    public float interactionDistance = 1.2f;
-
-
+    public float interactionDistance = 2.5f;
+    public float sphereRadius = 0.4f;
     public KeyCode interactKey = KeyCode.E;
+    public Text interactText;
+
+    public bool isRiding = false;
+    public bool uiOpened = false;   
+
+    IInteractable currentObj;
 
     void Update()
     {
-        Vector3 rayOrigin = InteractPosition.position;
-        Vector3 rayDirection = InteractPosition.forward;
+        
+        if (isRiding || uiOpened)
+        {
+            HidePopup();
+            return;
+        }
 
-        Ray ray = new Ray(transform.position, transform.forward);
+        Transform cam = Camera.main.transform;
+        Vector3 origin = cam.position;
+        Vector3 dir = cam.forward;
+
+        Debug.DrawRay(origin, dir * interactionDistance, Color.red);
+
+        int mask = ~LayerMask.GetMask("Player");
+
         RaycastHit hit;
-
-        Color lineColor = Color.red;
-
-        if (Physics.Raycast(ray, out hit, interactionDistance))
-        {   
-            lineColor = Color.green;
-
-            Debug.DrawLine(rayOrigin, hit.point, lineColor);
-
+        if (Physics.SphereCast(origin, sphereRadius, dir, out hit, interactionDistance, mask))
+        {
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
 
             if (interactable != null)
             {
+                ShowPopup(interactable.GetPrompt());
 
                 if (Input.GetKeyDown(interactKey))
-                {
-                    interactable.Interact(); 
-                }
+                    interactable.Interact(gameObject);
+
+                currentObj = interactable;
+                return;
             }
         }
-        else
+
+        HidePopup();
+        currentObj = null;
+    }
+
+    void ShowPopup(string msg)
+    {
+        if (interactText != null)
         {
-            Debug.DrawRay(rayOrigin, rayDirection * interactionDistance, lineColor);
-            
+            interactText.text = msg;
+            interactText.enabled = true;
+        }
+    }
+
+    void HidePopup()
+    {
+        if (interactText != null)
+        {
+            interactText.text = "";
+            interactText.enabled = false;
         }
     }
 }
