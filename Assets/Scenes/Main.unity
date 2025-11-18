@@ -13675,14 +13675,7 @@ MonoBehaviour:
   speed: 1.8
   runSpeed: 5
   rotationSpeed: 720
-  detectRadius: 0.5
-  detectDistance: 2
-  detectLayer:
-    serializedVersion: 2
-    m_Bits: 4294967295
   anim: {fileID: 773553257}
-  idleDelayMin: 4
-  idleDelayMax: 7
 --- !u!143 &773553260
 CharacterController:
   m_ObjectHideFlags: 0
@@ -13708,6 +13701,20 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &773553261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 773553256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d15044be3a7c6f4c83b1d2f9c9f17ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
+  interactionDistance: 1.2
+  interactKey: 101
 --- !u!1001 &782037836
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17246,6 +17253,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 80a8d485c62663749bb81904596ce8bb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 773553257}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 80a8d485c62663749bb81904596ce8bb, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 773553261}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 80a8d485c62663749bb81904596ce8bb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 773553259}
@@ -20794,8 +20804,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1164640304}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 196.73187, y: -0.004, z: 16.84499}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 177.67188, y: -0.014, z: -39.52501}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -20830,7 +20840,7 @@ Transform:
   - {fileID: 245578821}
   - {fileID: 604477074}
   - {fileID: 996778667}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1642801763}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1164813788
 GameObject:
@@ -29002,6 +29012,7 @@ Transform:
   - {fileID: 1283440672}
   - {fileID: 722954126}
   - {fileID: 1349296303}
+  - {fileID: 1164640305}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1651753659
@@ -37273,4 +37284,3 @@ SceneRoots:
   - {fileID: 987215299}
   - {fileID: 2037996932}
   - {fileID: 642888155}
-  - {fileID: 1164640305}

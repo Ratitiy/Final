@@ -2,8 +2,5 @@
 
 public interface IInteractable
 {
-    string GetPrompt();          
-    void Interact(GameObject interactor); 
-    void OnFocus();              
-    void OnLoseFocus();          
+    void Interact();
 }
