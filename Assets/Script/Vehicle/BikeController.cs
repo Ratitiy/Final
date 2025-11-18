@@ -46,12 +46,17 @@ public class BikeController : MonoBehaviour
        
         if (Input.GetKey(KeyCode.Space))
         {
-            rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, brakeForce * Time.fixedDeltaTime);
+            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, brakeForce * Time.fixedDeltaTime);
         }
 
         // ลงรถ
         if (Input.GetKeyDown(KeyCode.F))
             ExitMotorcycle();
+        
+        Vector3 flatUp = Vector3.up;
+        Quaternion keepUpright = Quaternion.FromToRotation(transform.up, flatUp) * rb.rotation;
+        rb.MoveRotation(Quaternion.Lerp(rb.rotation, keepUpright, 10f * Time.fixedDeltaTime));
+
     }
 
     public void EnterMotorcycle(GameObject player)

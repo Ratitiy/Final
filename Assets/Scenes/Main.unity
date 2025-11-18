@@ -3499,7 +3499,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 162048161}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1014088206}
+        m_TargetAssemblyTypeName: UpgradeUI, Assembly-CSharp
+        m_MethodName: UpgradeAcceleration
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &162048161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3730,6 +3742,11 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -1121275347893160120, guid: 690ccd5afd9cd1345a40698dac96422f, type: 3}
+--- !u!1 &174744162 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100000, guid: e3c71c50de390ec4190b877211ba0717, type: 3}
+  m_PrefabInstance: {fileID: 1749542453}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &181272233
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6536,7 +6553,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 339346420}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 
@@ -7231,7 +7248,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 389220337}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1014088206}
+        m_TargetAssemblyTypeName: UpgradeUI, Assembly-CSharp
+        m_MethodName: UpgradeTurn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &389220337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7365,7 +7394,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &398774297
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15510,13 +15539,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 844870208}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 1014088206}
+        m_TargetAssemblyTypeName: UpgradeUI, Assembly-CSharp
+        m_MethodName: UpgradeSpeed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -22640,7 +22669,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1394513446942493951}
   serializedVersion: 5
-  m_Mass: 500
+  m_Mass: 100
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -22657,7 +22686,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 48
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!1 &1215227080
 GameObject:
@@ -28507,8 +28536,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MerchantInteract
   prompt: "\u0E01\u0E14 E \u0E40\u0E1E\u0E37\u0E48\u0E2D\u0E2D\u0E31\u0E1B\u0E40\u0E01\u0E23\u0E14\u0E23\u0E16"
-  ui: {fileID: 0}
-  targetBike: {fileID: 0}
+  ui: {fileID: 1014088206}
+  targetBike: {fileID: 1394513446942493952}
 --- !u!136 &1583516228
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -32781,13 +32810,37 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 100000, guid: e3c71c50de390ec4190b877211ba0717, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1749542458}
   m_SourcePrefab: {fileID: 100100000, guid: e3c71c50de390ec4190b877211ba0717, type: 3}
 --- !u!4 &1749542454 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: e3c71c50de390ec4190b877211ba0717, type: 3}
   m_PrefabInstance: {fileID: 1749542453}
   m_PrefabAsset: {fileID: 0}
+--- !u!65 &1749542458
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174744162}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 20.000004, y: 0.20000087, z: 20.000004}
+  m_Center: {x: -0.0000076293945, y: 0.1, z: -0.000030517578}
 --- !u!1 &1766849151
 GameObject:
   m_ObjectHideFlags: 0
@@ -33452,7 +33505,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1793968027}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1014088206}
+        m_TargetAssemblyTypeName: UpgradeUI, Assembly-CSharp
+        m_MethodName: CloseShop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1793968027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42166,6 +42231,7 @@ MonoBehaviour:
   runSpeed: 5
   rotationSpeed: 720
   anim: {fileID: 8958320643657875485}
+  uiOpened: 0
 --- !u!4 &4679230630384602829
 Transform:
   m_ObjectHideFlags: 0
@@ -42492,33 +42558,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!54 &5001901413602816297
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8778941447516820901}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!137 &5021787143885805815
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0
@@ -45209,6 +45248,7 @@ MonoBehaviour:
   interactKey: 101
   interactText: {fileID: 916958554}
   isRiding: 0
+  uiOpened: 0
 --- !u!1 &8228628837874562258
 GameObject:
   m_ObjectHideFlags: 0
@@ -45718,7 +45758,6 @@ GameObject:
   - component: {fileID: 8216313523759071366}
   - component: {fileID: 4658195645200675456}
   - component: {fileID: 696131276560748309}
-  - component: {fileID: 5001901413602816297}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged

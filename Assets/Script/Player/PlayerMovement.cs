@@ -19,16 +19,25 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        
+
         if (uiOpened)
         {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+
             controller.SimpleMove(Vector3.zero);
             anim.SetBool("isWalking", false);
             anim.SetBool("isRunning", false);
             return;
         }
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
 
-        
+
+
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 

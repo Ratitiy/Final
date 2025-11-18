@@ -23,8 +23,7 @@ public class UpgradeUI : MonoBehaviour
         panel.SetActive(true);
         UpdateMoneyUI();
 
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        
 
         playerObj.GetComponent<PlayerMovement>().uiOpened = true;
 
@@ -51,8 +50,7 @@ public class UpgradeUI : MonoBehaviour
             playerObj.GetComponent<PlayerMovement>().enabled = true;
             playerObj.GetComponent<CharacterController>().enabled = true;
         }
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        
     }
 
     public void UpgradeSpeed()
