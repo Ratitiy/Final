@@ -35,8 +35,10 @@ public class PlayerMovement : MonoBehaviour
         controller.SimpleMove(move.normalized * currentSpeed);
 
         // ส่งค่าให้ Animator
-        anim.SetBool("isWalking", move.magnitude > 0.1f && !isRunning);
-        anim.SetBool("isRunning", move.magnitude > 0.1f && isRunning);
+        anim.SetBool("isWalking", move.magnitude > 0.1f);
+
+        anim.SetBool("isRunning", isRunning && move.magnitude > 0.1f);
+
 
 
 
