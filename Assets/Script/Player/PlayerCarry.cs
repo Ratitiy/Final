@@ -1,0 +1,34 @@
+﻿using UnityEngine;
+
+public class PlayerCarry : MonoBehaviour
+{
+    public Transform backSlot;       // ตำแหน่งหลังผู้เล่น
+    public Transform bikeSlot;       // ตำแหน่งวางบนรถ
+
+    public OrderObject carried;
+
+    public void Pickup(OrderObject obj)
+    {
+        if (carried != null) return;
+
+        carried = obj;
+        obj.PlaceAt(backSlot);
+    }
+
+    public void PlaceOnBike()
+    {
+        if (carried == null) return;
+
+        carried.PlaceAt(bikeSlot);
+    }
+
+    public void Deliver(DeliveryNPC npc)
+    {
+        if (carried == null) return;
+
+        Destroy(carried.gameObject);
+        carried = null;
+
+        QuestManager.Instance.CompleteQuest();
+    }
+}

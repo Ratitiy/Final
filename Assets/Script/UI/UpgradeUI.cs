@@ -84,7 +84,7 @@ public class UpgradeUI : MonoBehaviour
         }
     }
 
-    void UpdateMoneyUI()
+    public void UpdateMoneyUI()
     {
         moneyText.text = "Money: " + playerMoney;
     }
