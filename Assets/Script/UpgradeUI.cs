@@ -23,7 +23,8 @@ public class UpgradeUI : MonoBehaviour
         panel.SetActive(true);
         UpdateMoneyUI();
 
-        
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         playerObj.GetComponent<PlayerMovement>().uiOpened = true;
 
