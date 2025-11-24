@@ -2,8 +2,8 @@
 
 public class PlayerCarry : MonoBehaviour
 {
-    public Transform backSlot;       // ตำแหน่งหลังผู้เล่น
-    public Transform bikeSlot;       // ตำแหน่งวางบนรถ
+    public Transform backSlot;       
+    public Transform bikeSlot;       
 
     public OrderObject carried;
 
@@ -29,6 +29,6 @@ public class PlayerCarry : MonoBehaviour
         Destroy(carried.gameObject);
         carried = null;
 
-        QuestManager.Instance.CompleteQuest();
+        
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58cba3ed92aa7ae4893b36d669fc9242, type: 3}
   m_Name: QuestData
   m_EditorClassIdentifier: Assembly-CSharp::QuestData
-  questName: 
+  questName: Ramen
   description: 
   orderPrefab: {fileID: 0}
   prepareTime: 5
