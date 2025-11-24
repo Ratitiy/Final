@@ -2,17 +2,22 @@ using UnityEngine;
 
 public class Dorr : MonoBehaviour, IInteractable
 {
-    public string GetPrompt() =>"Exit";
+    public string GetPrompt() =>"[E]Enter";
 
     public GameObject Player;
 
-    public GameObject ExitPoint;
+    public Transform ExitPoint;
 
     public void Interact(GameObject player)
     {
-        player.transform.position = ExitPoint.transform.position;
-        player.transform.rotation = ExitPoint.transform.rotation;
+        var cc = player.GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false;
+
+        player.transform.position = ExitPoint.position;
+
+        if (cc != null) cc.enabled = true;
     }
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

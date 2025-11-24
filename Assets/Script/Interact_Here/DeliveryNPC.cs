@@ -16,6 +16,6 @@ public class DeliveryNPC : MonoBehaviour, IInteractable
 
         QuestManager.Instance.DeliverSuccess();
 
-        Destroy(gameObject);
+        Destroy(gameObject, 5f);
     }
 }
