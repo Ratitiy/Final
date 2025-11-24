@@ -3,7 +3,7 @@
 public class PlayerCarry : MonoBehaviour
 {
     public Transform backSlot;       
-    public Transform bikeSlot;       
+    //public Transform bikeSlot;       
 
     public OrderObject carried;
 
@@ -15,12 +15,12 @@ public class PlayerCarry : MonoBehaviour
         obj.PlaceAt(backSlot);
     }
 
-    public void PlaceOnBike()
+    /*public void PlaceOnBike()
     {
         if (carried == null) return;
 
         carried.PlaceAt(bikeSlot);
-    }
+    }*/
 
     public void Deliver(DeliveryNPC npc)
     {

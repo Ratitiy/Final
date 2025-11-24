@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58cba3ed92aa7ae4893b36d669fc9242, type: 3}
   m_Name: QuestData
   m_EditorClassIdentifier: Assembly-CSharp::QuestData
-  questName: Ramen
-  description: 
-  orderPrefab: {fileID: 0}
-  prepareTime: 5
+  questName: Ramen_01
+  description: "\u0E19\u0E33\u0E44\u0E1B\u0E2A\u0E48\u0E07\u0E43\u0E19\u0E1F\u0E32\u0E21"
+  orderPrefab: {fileID: 8254575016177187016, guid: 4178da8dc81974849b806532fca43910, type: 3}
+  prepareTime: 1
   rewardMoney: 200

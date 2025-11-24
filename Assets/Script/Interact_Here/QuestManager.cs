@@ -32,10 +32,10 @@ public class QuestManager : MonoBehaviour
 
     System.Collections.IEnumerator PrepareOrder()
     {
-        // รอเวลาตาม QuestData
+        
         yield return new WaitForSeconds(currentQuest.prepareTime);
 
-        // สร้างอาหาร
+       
         spawnedOrderObj = Instantiate(
             currentQuest.orderPrefab,
             orderSpawn.position,
@@ -61,7 +61,7 @@ public class QuestManager : MonoBehaviour
     {
         questActive = false;
 
-        // ให้รางวัลเงิน (เชื่อมกับ UpgradeUI)
+        
         var ui = FindAnyObjectByType<UpgradeUI>();
         ui.playerMoney += (int)currentQuest.rewardMoney;
         ui.UpdateMoneyUI();
@@ -72,7 +72,7 @@ public class QuestManager : MonoBehaviour
         if (activeNPC != null)
             Destroy(activeNPC);
 
-        // หลังส่งเสร็จ → พร้อมสุ่มเควสใหม่ทันที
+        
         currentQuest = null;
     }
 }

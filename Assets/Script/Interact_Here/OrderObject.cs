@@ -6,11 +6,13 @@ public class OrderObject : MonoBehaviour, IInteractable
 
     bool picked = false;
 
+
+
     public void Interact(GameObject player)
     {
         if (!picked)
         {
-            // ผู้เล่นหยิบของใส่หลัง
+            
             var carry = player.GetComponent<PlayerCarry>();
             carry.Pickup(this);
 
