@@ -2,13 +2,23 @@
 
 public class Quest : MonoBehaviour, IInteractable
 {
-    public QuestData quest;
+    public QuestData[] quests;
     public Transform spawnPoint;
-    public string GetPrompt() =>"รับเควส";
+    public string GetPrompt()
+    {
+        if (QuestManager.Instance.questActive)
+        {
+            return "ส่งของให้เสร็จก่อน";
+        }
+        return "รับเควส";
+    }
 
     public void Interact(GameObject player)
     {
-        QuestManager.Instance.StartQuest(quest, spawnPoint);
+        int randomIndex = Random.Range(0, quests.Length);
+        QuestData selectedQuest = quests[randomIndex];
+
+        QuestManager.Instance.StartQuest(selectedQuest, spawnPoint);
 
     }
 
