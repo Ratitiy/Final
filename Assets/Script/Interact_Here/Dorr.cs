@@ -1,33 +1,42 @@
-using System.Text;
+﻿
 using UnityEngine;
 
 public class Dorr : MonoBehaviour, IInteractable
 {
-    public string GetPrompt() =>"[E]Enter";
-
-    public GameObject Player;
+    public string GetPrompt() => "[E]Enter";
 
     public Transform ExitPoint;
 
     public void Interact(GameObject player)
     {
-
         Debug.Log("InteractDoor");
-        Player.transform.position = ExitPoint.position;
 
-        
+        // 1. หา Component CharacterController ของผู้เล่น
+        CharacterController cc = player.GetComponent<CharacterController>();
+
+        // 2. ถ้ามี ต้องสั่งปิด (Disable) ก่อน ไม่งั้นย้ายตำแหน่งไม่ได้
+        if (cc != null)
+        {
+            cc.enabled = false;
+        }
+
+        // 3. ย้ายตำแหน่งไปยังจุดออก
+        player.transform.position = ExitPoint.position;
+
+        // 4. สั่งเปิด (Enable) กลับคืนเพื่อให้เดินต่อได้
+        if (cc != null)
+        {
+            cc.enabled = true;
+        }
     }
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
