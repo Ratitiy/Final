@@ -13592,7 +13592,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dorr
   Player: {fileID: 8778941447516820901}
-  ExitPoint: {fileID: 1693474988}
+  ExitPoint: {fileID: 1693474989}
 --- !u!65 &645471960
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17515,7 +17515,7 @@ Transform:
   m_GameObject: {fileID: 851472176}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 171.52, y: -0.03846, z: 25.52}
+  m_LocalPosition: {x: 171.52, y: 1.017, z: 25.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
