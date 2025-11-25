@@ -14,6 +14,8 @@ public class QuestManager : MonoBehaviour
 
     public Transform[] npcSpawnPoints;
 
+    public Maker maker;
+
     public bool questActive = false;
 
     void Awake()
@@ -60,12 +62,20 @@ public class QuestManager : MonoBehaviour
             npcSpawnPoints[r].position,
             npcSpawnPoints[r].rotation
         );
+        if (maker != null)
+        {
+            maker.Target(activeNPC.transform);
+        }
     }
 
     public void DeliverSuccess()
     {
         questActive = false;
 
+        if(maker != null)
+        {
+            maker.Target(activeNPC.transform);
+        }
         
         var ui = FindAnyObjectByType<UpgradeUI>();
         ui.playerMoney += (int)currentQuest.rewardMoney;
