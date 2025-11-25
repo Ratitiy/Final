@@ -32556,7 +32556,7 @@ GameObject:
   - component: {fileID: 1583516229}
   - component: {fileID: 1583516228}
   - component: {fileID: 1583516227}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Merchant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
