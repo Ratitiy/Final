@@ -4,7 +4,7 @@ using UnityEngine;
 public class QuestData : ScriptableObject
 {
     public string questName;
-    public string description;
+    
 
     public GameObject orderPrefab;
     public float prepareTime = 5f;

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 58cba3ed92aa7ae4893b36d669fc9242, type: 3}
-  m_Name: QuestData
+  m_Name: QuestData2
   m_EditorClassIdentifier: Assembly-CSharp::QuestData
-  questName: Ramen_01
+  questName: Ramen_02
   orderPrefab: {fileID: 8254575016177187016, guid: 4178da8dc81974849b806532fca43910, type: 3}
   prepareTime: 1
-  rewardMoney: 200
+  rewardMoney: 250

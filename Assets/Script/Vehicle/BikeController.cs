@@ -73,6 +73,12 @@ public class BikeController : MonoBehaviour
         Drive.SetActive(true);
         isDriving = true;
 
+        var carry = player.GetComponent<PlayerCarry>();
+        if (carry != null)
+        {
+            carry.PlaceOnBike();
+        }
+
         if (camaraSwitch != null)
             camaraSwitch.SetTarget(motorcycleCamTarget);
     }
