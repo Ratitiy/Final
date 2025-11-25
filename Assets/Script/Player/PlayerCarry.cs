@@ -20,6 +20,16 @@ public class PlayerCarry : MonoBehaviour
         if (carried == null) return;
 
         carried.PlaceAt(bikeSlot);
+        foreach (var r in carried.GetComponentsInChildren<Renderer>())
+        {
+            r.enabled = true;
+        }
+    }
+    public void TakeOffBike()
+    {
+        if (carried == null) return;
+
+        carried.PlaceAt(backSlot); 
     }
 
     public void Deliver(DeliveryNPC npc)

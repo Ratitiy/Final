@@ -6058,6 +6058,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuestManager
   npcSpawnPoints:
   - {fileID: 851472177}
+  - {fileID: 1533752987}
+  - {fileID: 569741574}
   questActive: 0
 --- !u!1001 &292957924
 PrefabInstance:
@@ -41723,8 +41725,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1996808632}
-  - component: {fileID: 1996808633}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: FoodTuck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41746,27 +41747,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1134971665158535878}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1996808633
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1996808631}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &2003302969
 PrefabInstance:
   m_ObjectHideFlags: 0

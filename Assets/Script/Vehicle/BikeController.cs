@@ -87,6 +87,12 @@ public class BikeController : MonoBehaviour
     {
         if (currentPlayer == null) return;
 
+        var carry = currentPlayer.GetComponent<PlayerCarry>();
+        if (carry != null)
+        {
+            carry.TakeOffBike();
+        }
+
         Drive.SetActive(false);
 
         currentPlayer.transform.position = exitPoint.position;
