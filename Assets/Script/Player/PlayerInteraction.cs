@@ -31,7 +31,7 @@ public class PlayerInteraction : MonoBehaviour
         RaycastHit hit;
         if (Physics.SphereCast(origin, sphereRadius, dir, out hit, interactionDistance, interactLayer))
         {
-            Debug.Log("Hit: " + hit.collider.name);
+            //Debug.Log("Hit: " + hit.collider.name);
 
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
 

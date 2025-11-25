@@ -1,3 +1,4 @@
+using System.Text;
 using UnityEngine;
 
 public class Dorr : MonoBehaviour, IInteractable
@@ -10,12 +11,11 @@ public class Dorr : MonoBehaviour, IInteractable
 
     public void Interact(GameObject player)
     {
-        var cc = player.GetComponent<CharacterController>();
-        if (cc != null) cc.enabled = false;
 
-        player.transform.position = ExitPoint.position;
+        Debug.Log("InteractDoor");
+        Player.transform.position = ExitPoint.position;
 
-        if (cc != null) cc.enabled = true;
+        
     }
 
 
