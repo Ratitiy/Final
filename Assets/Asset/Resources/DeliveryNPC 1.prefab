@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 5981027312365060542}
   - component: {fileID: 2738773603978709570}
   m_Layer: 6
-  m_Name: DeliveryNPC
+  m_Name: DeliveryNPC 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
