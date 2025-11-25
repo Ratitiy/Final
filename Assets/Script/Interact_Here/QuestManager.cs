@@ -7,6 +7,8 @@ public class QuestManager : MonoBehaviour
     QuestData currentQuest;
     Transform orderSpawn;
 
+    public GameObject[] npcPrefabs;
+
     GameObject spawnedOrderObj;
     GameObject activeNPC;
 
@@ -50,8 +52,11 @@ public class QuestManager : MonoBehaviour
         if (activeNPC != null) Destroy(activeNPC);
 
         int r = Random.Range(0, npcSpawnPoints.Length);
-        activeNPC = Instantiate(
-            Resources.Load<GameObject>("DeliveryNPC"),
+
+        int m = Random.Range(0, npcPrefabs.Length);
+        GameObject selectedNPC = npcPrefabs[m];
+
+        activeNPC = Instantiate(selectedNPC,
             npcSpawnPoints[r].position,
             npcSpawnPoints[r].rotation
         );
