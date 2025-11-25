@@ -22,7 +22,7 @@ public class Maker : MonoBehaviour
         {
             gameObject.SetActive(false);    
             return;
-
+            
 
         }
         Vector3 S = Camera.main.WorldToScreenPoint(targetransformt.position);
