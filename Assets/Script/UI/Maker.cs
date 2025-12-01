@@ -1,32 +1,30 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Maker : MonoBehaviour
 {
-    private Transform targetransformt;
     private RectTransform marker;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public float height = 10f;
+    private Transform npc;
+
     void Start()
     {
         marker = GetComponent<RectTransform>();
+        
     }
     public void Target(Transform target)
     {
-        targetransformt = target;
-        gameObject.SetActive(target != null);
+        transform.parent = target;
+        transform.localPosition = new Vector3(0f, height, 0f);
+        //targetransformt = target;
+        transform.localRotation = Quaternion.identity;
+        gameObject.SetActive(true);
     }
 
-    // Update is called once per frame
-    void Update()
+    void SetDisable()
     {
-        if (targetransformt == null)
-        {
-            gameObject.SetActive(false);    
-            return;
-            
-
-        }
-        Vector3 S = Camera.main.WorldToScreenPoint(targetransformt.position);
-
-        marker.position = S;
+        npc = null;
+        transform.parent = null;
+        gameObject.SetActive(false);
     }
 }

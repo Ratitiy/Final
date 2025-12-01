@@ -4,7 +4,9 @@ public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance;
 
-    QuestData currentQuest;
+
+
+    public QuestData currentQuest;
     Transform orderSpawn;
 
     public GameObject[] npcPrefabs;
@@ -85,7 +87,7 @@ public class QuestManager : MonoBehaviour
             Destroy(spawnedOrderObj);
 
         if (activeNPC != null)
-            Destroy(activeNPC);
+            Destroy(activeNPC,5);
 
         
         currentQuest = null;

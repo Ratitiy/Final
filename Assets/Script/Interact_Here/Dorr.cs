@@ -1,42 +1,54 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Dorr : MonoBehaviour, IInteractable
 {
-    public string GetPrompt() => "[E]Enter";
+    public string GetPrompt() => isEnterHouse ? "เข้าบ้าน (FPS)" : "ออกจากบ้าน (TPS)";
 
+    [Header("Settings")]
     public Transform ExitPoint;
+    public bool isEnterHouse = false; 
+
+    [Header("References")]
+    public CamaraSwitch camSwitch;
+
+    private void Start()
+    {
+        if (camSwitch == null)
+            camSwitch = FindAnyObjectByType<CamaraSwitch>();
+    }
 
     public void Interact(GameObject player)
     {
-        Debug.Log("InteractDoor");
-
-        
         CharacterController cc = player.GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false;
 
-        
-        if (cc != null)
-        {
-            cc.enabled = false;
-        }
-
-        
         player.transform.position = ExitPoint.position;
+        player.transform.rotation = ExitPoint.rotation;
 
-        
-        if (cc != null)
+        if (cc != null) cc.enabled = true;
+
+        HandleCameraMode(player);
+    }
+
+    void HandleCameraMode(GameObject player)
+    {
+        if (camSwitch == null) return;
+
+        if (isEnterHouse)
         {
-            cc.enabled = true;
+            Transform fpsPos = player.transform.Find("FPSPosition");
+
+            if (fpsPos == null)
+            {
+                fpsPos = player.transform;
+                Debug.LogWarning("ไม่เจอ FPSPosition ใน Player");
+            }
+
+            camSwitch.SwitchToFPS(fpsPos);
         }
-    }
-
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
+        else
+        {
+            camSwitch.SwitchToTPS(player.transform);
+        }
     }
 }
