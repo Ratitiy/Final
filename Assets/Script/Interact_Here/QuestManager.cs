@@ -26,6 +26,7 @@ public class QuestManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        SoundManager.Instance.PlayBGM("BackgroundMusic");
     }
     void Update()
     {
