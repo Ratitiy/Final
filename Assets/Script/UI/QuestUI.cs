@@ -34,7 +34,7 @@ public class QuestUI : MonoBehaviour
         else
         {
             questInfoText.color = normalColor;
-            questInfoText.text = "รับงานที่หัวหน้าเชฟ";
+            questInfoText.text = "รับงานที่\n"+"หัวหน้าเชฟ";
         }
     }
 }
