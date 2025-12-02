@@ -19,10 +19,27 @@ public class QuestManager : MonoBehaviour
     public Maker maker;
 
     public bool questActive = false;
+    
+    public float remainingTime;        
+    public bool isQuestFailed = false;
 
     void Awake()
     {
         Instance = this;
+    }
+    void Update()
+    {
+        // ถ้าเควสกำลังดำเนินอยู่ ให้ลดเวลาลงเรื่อยๆ
+        if (questActive)
+        {
+            remainingTime -= Time.deltaTime;
+
+                
+            if (remainingTime <= 0)
+            {
+                FailQuest();
+            }
+        }
     }
 
     public void StartQuest(QuestData data, Transform spawnPoint)
@@ -30,8 +47,11 @@ public class QuestManager : MonoBehaviour
         if (questActive) return;
 
         questActive = true;
+        isQuestFailed = false;
         currentQuest = data;
         orderSpawn = spawnPoint;
+
+        remainingTime = data.timeLimit;
 
         StartCoroutine(PrepareOrder());
     }
@@ -73,8 +93,9 @@ public class QuestManager : MonoBehaviour
     public void DeliverSuccess()
     {
         questActive = false;
+        isQuestFailed = false;
 
-        if(maker != null)
+        if (maker != null)
         {
             maker.Target(activeNPC.transform);
         }
@@ -88,6 +109,22 @@ public class QuestManager : MonoBehaviour
 
         if (activeNPC != null)
             Destroy(activeNPC,5);
+
+        
+        currentQuest = null;
+    }
+    public void FailQuest()
+    {
+        Debug.Log("Quest Failed");
+        questActive = false;
+        isQuestFailed = true;
+
+        
+        if (spawnedOrderObj != null) Destroy(spawnedOrderObj);
+        if (activeNPC != null) Destroy(activeNPC);
+
+        
+        if (maker != null) maker.gameObject.SetActive(false);
 
         
         currentQuest = null;

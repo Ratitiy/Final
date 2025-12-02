@@ -10,4 +10,5 @@ public class QuestData : ScriptableObject
     public float prepareTime = 5f;
 
     public float rewardMoney = 200f;
+    public float timeLimit = 60f;
 }

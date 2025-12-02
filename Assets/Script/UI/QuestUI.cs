@@ -3,8 +3,10 @@ using UnityEngine.UI;
 
 public class QuestUI : MonoBehaviour
 {
-    [Header("UI Reference")]
-    public Text T;
+    public Text questInfoText;
+
+    public Color normalColor = Color.white;
+    public Color failColor = Color.red;
 
     void Update()
     {
@@ -12,18 +14,27 @@ public class QuestUI : MonoBehaviour
 
         if (QuestManager.Instance.questActive)
         {
-            QuestData data = QuestManager.Instance.currentQuest;
+            questInfoText.color = normalColor;
 
+            QuestData data = QuestManager.Instance.currentQuest;
             if (data != null)
             {
-                T.text = $"ภารกิจ: {data.questName}\n" +
-                                 $"รางวัล: {data.rewardMoney} บาท\n" +
-                                 "สถานะ: กำลังไปส่ง...";
+
+                questInfoText.text = $"ภารกิจ: {data.questName}\n" +
+                                     $"รางวัล: {data.rewardMoney} $";
             }
         }
+
+        else if (QuestManager.Instance.isQuestFailed)
+        {
+            questInfoText.color = failColor;
+            questInfoText.text = "ส่งไม่ทัน กลับไปคุยกับ\n" +"หัวหน้าเซฟ";
+        }
+
         else
         {
-            T.text = "คุยกับเซฟ";
+            questInfoText.color = normalColor;
+            questInfoText.text = "รับงานที่หัวหน้าเชฟ";
         }
     }
 }
