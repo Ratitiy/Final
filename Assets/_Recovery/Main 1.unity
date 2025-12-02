@@ -21535,6 +21535,7 @@ RectTransform:
   m_Children:
   - {fileID: 398774297}
   - {fileID: 2110902282}
+  - {fileID: 1732817563}
   - {fileID: 1788737796}
   - {fileID: 339346424}
   - {fileID: 95070374}
@@ -21561,10 +21562,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeUI
   panel: {fileID: 398774296}
   moneyText: {fileID: 863856935}
-  playerMoney: 500
-  speedCost: 200
-  accelCost: 150
-  turnCost: 150
+  playerMoney: 0
+  speedCost: 400
+  accelCost: 300
+  turnCost: 300
 --- !u!114 &1014088207
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36982,16 +36983,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1732817562}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 12.718843, y: 12.718843, z: 12.718843}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1788737796}
+  m_Father: {fileID: 1014088205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 299.49524, y: -295}
+  m_AnchoredPosition: {x: -394.50476, y: -169}
   m_SizeDelta: {x: 100.8641, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1732817564
@@ -38254,14 +38255,13 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1732817563}
+  m_Children: []
   m_Father: {fileID: 1014088205}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -694, y: 126}
-  m_SizeDelta: {x: 400, y: 300}
+  m_AnchoredPosition: {x: -740.81726, y: 126}
+  m_SizeDelta: {x: 422.3655, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1788737797
 MonoBehaviour:
