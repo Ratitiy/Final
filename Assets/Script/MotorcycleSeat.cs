@@ -1,84 +1,101 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
 public class MotorcycleSeat : MonoBehaviour
 {
     public Transform seatPoint;
     public Motorcycle motorcycle;
 
-    [Header("Cinemachine Cameras")]
-    public GameObject playerCamera; 
-    public GameObject bikeCamera;   
-
     GameObject currentPlayer;
-    bool isMounting = false;
+    bool canDismount = false;
 
     void Interact(GameObject player)
     {
-        if (currentPlayer == null && !isMounting)
-        {
-            StartCoroutine(MountRoutine(player));
-        }
+        if (currentPlayer == null)
+            Mount(player);
     }
 
     void Update()
     {
-        if (currentPlayer != null && !isMounting && Input.GetKeyDown(KeyCode.F))
+        if (currentPlayer != null && canDismount && Input.GetKeyDown(KeyCode.F))
         {
+            PlayerInteract pInteract = currentPlayer.GetComponent<PlayerInteract>();
+            if (pInteract != null && pInteract.currentTarget != null && pInteract.currentTarget.gameObject != this.gameObject)
+            {
+                pInteract.currentTarget.SendMessage("Interact", currentPlayer, SendMessageOptions.DontRequireReceiver);
+                return;
+            }
             Dismount();
         }
     }
 
-    IEnumerator MountRoutine(GameObject player)
+    void Mount(GameObject player)
     {
-        isMounting = true;
         currentPlayer = player;
 
-        // ปิดระบบต่างๆ ของผู้เล่น
-        if (player.TryGetComponent(out PlayerInteract interact)) interact.enabled = false;
-        if (player.TryGetComponent(out Move move)) move.enabled = false;
-        if (player.TryGetComponent(out CharacterController cc)) cc.enabled = false;
-        foreach (var col in player.GetComponentsInChildren<Collider>()) col.enabled = false;
+        var collider = player.GetComponent<Collider>();
+        if (collider) collider.enabled = false;
+
+        player.transform.SetParent(motorcycle.transform);
+        player.transform.position = seatPoint.position;
+        player.transform.rotation = seatPoint.rotation;
+
+        player.GetComponent<Move>().enabled = false;
+        player.GetComponent<CharacterController>().enabled = false;
+        motorcycle.enabled = true;
+
         var mesh = player.GetComponentInChildren<SkinnedMeshRenderer>();
         if (mesh) mesh.enabled = false;
 
-        player.transform.SetParent(seatPoint);
-        player.transform.localPosition = Vector3.zero;
-        player.transform.localRotation = Quaternion.identity;
+        StartCoroutine(EnableDismountCooldown());
+    }
 
-        motorcycle.enabled = true;
-
-        // --- สลับกล้อง Cinemachine ---
-        if (playerCamera != null) playerCamera.SetActive(false); // ปิดกล้องคน
-        if (bikeCamera != null) bikeCamera.SetActive(true);      // เปิดกล้องรถ
-        // ---------------------------
-
+    IEnumerator EnableDismountCooldown()
+    {
         yield return new WaitForSeconds(0.5f);
-        isMounting = false;
+        canDismount = true;
     }
 
     void Dismount()
     {
         motorcycle.enabled = false;
-
         currentPlayer.transform.SetParent(null);
-        Vector3 exitPoint = currentPlayer.transform.position + (currentPlayer.transform.right * 1.2f) + (Vector3.up * 0.1f);
-        currentPlayer.transform.position = exitPoint;
+        Vector3 dismountPos = seatPoint.position + (transform.right * -1.5f);
+
+        RaycastHit hit;
+        float groundY = transform.position.y;
+        if (Physics.Raycast(dismountPos + Vector3.up * 2f, Vector3.down, out hit, 5f))
+        {
+            groundY = hit.point.y;
+        }
+        CharacterController cc = currentPlayer.GetComponent<CharacterController>();
+        if (cc != null)
+        {
+            float heightOffset = (cc.height * 0.5f) - cc.center.y;
+            dismountPos.y = groundY + heightOffset + 0.05f;
+        }
+        else
+        {
+            dismountPos.y = groundY + 1.0f;
+        }
+
+        currentPlayer.transform.position = dismountPos;
         currentPlayer.transform.rotation = Quaternion.Euler(0, currentPlayer.transform.eulerAngles.y, 0);
 
-        // คืนค่าระบบผู้เล่น
-        if (currentPlayer.TryGetComponent(out CharacterController cc)) cc.enabled = true;
-        if (currentPlayer.TryGetComponent(out Move move)) move.enabled = true;
-        foreach (var col in currentPlayer.GetComponentsInChildren<Collider>()) col.enabled = true;
+        var collider = currentPlayer.GetComponent<Collider>();
+        if (collider) collider.enabled = true;
+
+        currentPlayer.GetComponent<CharacterController>().enabled = true;
+        if (cc != null) cc.Move(Vector3.up * 0.001f);
+        if (currentPlayer.GetComponent<Move>())
+        {
+            currentPlayer.GetComponent<Move>().enabled = true;
+        }
+
         var mesh = currentPlayer.GetComponentInChildren<SkinnedMeshRenderer>();
         if (mesh) mesh.enabled = true;
-        if (currentPlayer.TryGetComponent(out PlayerInteract interact)) interact.enabled = true;
-
-        // --- สลับกล้องคืน ---
-        if (bikeCamera != null) bikeCamera.SetActive(false);     // ปิดกล้องรถ
-        if (playerCamera != null) playerCamera.SetActive(true);  // เปิดกล้องคน
-        // ------------------
 
         currentPlayer = null;
+        canDismount = false;
     }
 }

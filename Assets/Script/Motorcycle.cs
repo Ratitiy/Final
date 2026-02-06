@@ -11,7 +11,7 @@ public class Motorcycle : MonoBehaviour
     public float groundCheckDistance = 1.8f;
     public LayerMask groundLayer;
 
-    Rigidbody rb;
+    public Rigidbody rb;
 
     void Awake()
     {
@@ -21,10 +21,10 @@ public class Motorcycle : MonoBehaviour
 
     void Start()
     {
-        
+
         rb.centerOfMass = new Vector3(0, -0.8f, 0);
 
-        
+
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
     }
@@ -36,7 +36,7 @@ public class Motorcycle : MonoBehaviour
         AlignToGround();
     }
 
-    
+
 
     void Move()
     {
@@ -62,16 +62,15 @@ public class Motorcycle : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, groundCheckDistance, groundLayer))
         {
             Quaternion targetRotation =
-                Quaternion.FromToRotation(transform.up, hit.normal) * rb.rotation;
+                Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
 
-            Quaternion smoothRotation = Quaternion.Slerp(
-                rb.rotation,
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
                 targetRotation,
                 alignSpeed * Time.fixedDeltaTime
             );
-
-            rb.MoveRotation(smoothRotation);
         }
+
 
         Debug.DrawRay(
             transform.position + Vector3.up * 0.6f,
@@ -79,5 +78,4 @@ public class Motorcycle : MonoBehaviour
             Color.yellow
         );
     }
-
 }

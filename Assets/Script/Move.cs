@@ -3,12 +3,9 @@
 public class Move : MonoBehaviour
 {
     public float speed = 5f;
-    public float gravity = -9.81f;  
     public Transform cam;
 
     CharacterController controller;
-    Vector3 velocity;               
-    bool isGrounded;
 
     void Start()
     {
@@ -17,15 +14,6 @@ public class Move : MonoBehaviour
 
     void Update()
     {
-       
-        isGrounded = controller.isGrounded;
-
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f; 
-        }
-
-        
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
 
@@ -48,11 +36,5 @@ public class Move : MonoBehaviour
                 10f * Time.deltaTime
             );
         }
-
-        
-        velocity.y += gravity * Time.deltaTime;
-
-        
-        controller.Move(velocity * Time.deltaTime);
     }
 }

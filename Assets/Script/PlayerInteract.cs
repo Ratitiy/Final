@@ -12,7 +12,7 @@ public class PlayerInteract : MonoBehaviour
     public bool showRay = true;
 
     bool canInteract;
-    Collider currentTarget;
+    public Collider currentTarget;
 
     void Update()
     {

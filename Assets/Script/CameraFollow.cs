@@ -7,34 +7,33 @@ public class CameraFollow : MonoBehaviour
 
     [Header("Settings")]
     public Vector3 offset;            
-    public bool isTopDown = false;    
+    public bool isTopDown = false;
 
     void LateUpdate()
     {
         if (target == null) return;
 
-        
-        Vector3 desiredPosition = target.position + offset;
+        Vector3 desiredPosition;
 
-        
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
-        transform.position = smoothedPosition;
-
-        
         if (isTopDown)
         {
-            
-            
+            desiredPosition = target.position + offset;
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(90f, target.eulerAngles.y, 0f), smoothSpeed * Time.deltaTime);
         }
         else
         {
-            
-            transform.LookAt(target.position + Vector3.up * 1.5f);
+            desiredPosition = target.TransformPoint(offset);
+            var lookAtTarget = target.position + (Vector3.up * 1.5f);
+            Vector3 direction = lookAtTarget - transform.position;
+            if (direction != Vector3.zero)
+            {
+                Quaternion toRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Lerp(transform.rotation, toRotation, smoothSpeed * Time.deltaTime);
+            }
         }
+        transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
     }
 
-    
     public void SetTarget(Transform newTarget, Vector3 newOffset, bool topDown)
     {
         target = newTarget;
