@@ -5,7 +5,8 @@ public class MotorcycleSeat : MonoBehaviour
 {
     public Transform seatPoint;
     public Motorcycle motorcycle;
-
+    public GameObject playerCamera; 
+    public GameObject bikeCamera;   
     GameObject currentPlayer;
     bool canDismount = false;
 
