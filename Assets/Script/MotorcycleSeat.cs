@@ -6,6 +6,13 @@ public class MotorcycleSeat : MonoBehaviour
     public Transform seatPoint;
     public Motorcycle motorcycle;
 
+<<<<<<< Updated upstream
+=======
+    
+    public GameObject playerCamera; 
+    public GameObject bikeCamera;   
+
+>>>>>>> Stashed changes
     GameObject currentPlayer;
     bool canDismount = false;
 
