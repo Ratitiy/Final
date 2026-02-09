@@ -2,80 +2,46 @@
 
 public class Motorcycle : MonoBehaviour
 {
-    [Header("Movement")]
-    public float speed = 800f;
-    public float turnSpeed = 80f;
+    [Header("Car Settings")]
+    public float speed = 1500f;       
+    public float turnSpeed = 50f;     
 
-    [Header("Ground Align")]
-    public float alignSpeed = 6f;
-    public float groundCheckDistance = 1.8f;
-    public LayerMask groundLayer;
+    [Header("Status")]
+    public bool isDriving = false;   
 
-    public Rigidbody rb;
-
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody>();
-        enabled = false;
-    }
+    private Rigidbody rb;
 
     void Start()
     {
-
-        rb.centerOfMass = new Vector3(0, -0.8f, 0);
-
-
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        rb = GetComponent<Rigidbody>();
     }
 
     void FixedUpdate()
     {
-        Move();
-        Turn();
-        AlignToGround();
+        if (!isDriving) return;
+        float moveInput = Input.GetAxis("Vertical");    
+        float turnInput = Input.GetAxis("Horizontal");  
+        MoveCar(moveInput, turnInput);
     }
 
-
-
-    void Move()
+    void MoveCar(float move, float turn)
     {
-        float v = Input.GetAxis("Vertical");
-        rb.AddForce(transform.forward * v * speed * Time.fixedDeltaTime, ForceMode.Force);
-    }
-
-    void Turn()
-    {
-        float h = Input.GetAxis("Horizontal");
-        Quaternion turn =
-            Quaternion.Euler(0, h * turnSpeed * Time.fixedDeltaTime, 0);
-
-        rb.MoveRotation(rb.rotation * turn);
-    }
-
-
-
-    void AlignToGround()
-    {
-        Ray ray = new Ray(transform.position + Vector3.up * 0.6f, Vector3.down);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, groundCheckDistance, groundLayer))
+        if (move != 0)
         {
-            Quaternion targetRotation =
-                Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
-
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                targetRotation,
-                alignSpeed * Time.fixedDeltaTime
-            );
+            rb.AddForce(transform.forward * move * speed * Time.fixedDeltaTime, ForceMode.Acceleration);
         }
+        if (turn != 0)
+        {
+            Vector3 rotation = Vector3.up * turn * turnSpeed * Time.fixedDeltaTime;
+            rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
+        }
+    }
+    public void Interact(GameObject player)
+    {
+        if (isDriving) return;
+        isDriving = true;
 
-
-        Debug.DrawRay(
-            transform.position + Vector3.up * 0.6f,
-            Vector3.down * groundCheckDistance,
-            Color.yellow
-        );
+        if (player.GetComponent<Move>()) player.GetComponent<Move>().enabled = false;
+        if (player.GetComponent<CharacterController>()) player.GetComponent<CharacterController>().enabled = false;
     }
 }
