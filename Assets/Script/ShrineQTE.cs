@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,6 +37,8 @@ public class ShrineQTE : MonoBehaviour
     private GameObject playerRef;
     private bool wasMovementEnabled = true;
 
+    private bool wasKinematic;
+
     void Start()
     {
         if (qtePanel != null) qtePanel.SetActive(false);
@@ -57,6 +59,21 @@ public class ShrineQTE : MonoBehaviour
         if (player.GetComponent<Move>()) wasMovementEnabled = player.GetComponent<Move>().enabled;
         if (player.GetComponent<Move>()) player.GetComponent<Move>().enabled = false;
         if (player.GetComponent<CharacterController>()) player.GetComponent<CharacterController>().enabled = false;
+
+        Motorcycle bike = player.GetComponent<Motorcycle>();
+        if (bike != null)
+        {
+            // ตัดการควบคุมปุ่ม
+            bike.isDriving = false;
+
+            // แช่แข็งรถไม่ให้ไหล
+            Rigidbody rb = player.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                wasKinematic = rb.isKinematic; 
+                rb.isKinematic = true;         
+            }
+        }
 
         qtePanel.SetActive(true);
         GenerateSequence();
@@ -102,14 +119,9 @@ public class ShrineQTE : MonoBehaviour
         {
             GameObject keyObj = spawnedKeyObjs[i];
             Image bgImage = keyObj.GetComponent<Image>();
-            if (bgImage == null)
-            {
-                bgImage = keyObj.GetComponentInChildren<Image>();
-            }
-            if (bgImage == null)
-            {
-                continue;
-            }
+            if (bgImage == null) bgImage = keyObj.GetComponentInChildren<Image>();
+
+            if (bgImage == null) continue;
 
             if (i == currentIndex)
             {
@@ -171,7 +183,6 @@ public class ShrineQTE : MonoBehaviour
             }
         }
     }
-
     IEnumerator ShakeUI(Transform target)
     {
         Vector3 originalPos = target.localPosition;
@@ -196,7 +207,9 @@ public class ShrineQTE : MonoBehaviour
         {
             GameObject lastKey = spawnedKeyObjs[spawnedKeyObjs.Count - 1];
             lastKey.transform.localScale = Vector3.one * normalScale;
-            if (lastKey.GetComponent<Image>()) lastKey.GetComponent<Image>().color = completedColor;
+            Image img = lastKey.GetComponent<Image>();
+            if (img == null) img = lastKey.GetComponentInChildren<Image>();
+            if (img != null) img.color = completedColor;
         }
         StartCoroutine(CloseAfterDelay(0.5f));
     }
@@ -226,6 +239,17 @@ public class ShrineQTE : MonoBehaviour
                 playerRef.GetComponent<Move>().enabled = wasMovementEnabled;
             if (playerRef.GetComponent<CharacterController>())
                 playerRef.GetComponent<CharacterController>().enabled = wasMovementEnabled;
+
+            Motorcycle bike = playerRef.GetComponent<Motorcycle>();
+            if (bike != null)
+            {
+                Rigidbody rb = playerRef.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.isKinematic = wasKinematic;
+                }
+                bike.isDriving = true;
+            }
         }
     }
 }
