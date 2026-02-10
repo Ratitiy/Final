@@ -1,81 +1,153 @@
 ﻿using UnityEngine;
+using TMPro;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Motorcycle : MonoBehaviour
 {
-    [Header("Movement")]
-    public float speed = 800f;
-    public float turnSpeed = 80f;
+    [Header("Wheel Colliders")]
+    public WheelCollider frontWheel;
+    public WheelCollider backWheel;
 
-    [Header("Ground Align")]
-    public float alignSpeed = 6f;
-    public float groundCheckDistance = 1.8f;
-    public LayerMask groundLayer;
+    [Header("Wheel Transforms")]
+    public Transform frontWheelMesh;
+    public Transform backWheelMesh;
+    public Transform frontMudguard;
 
-    public Rigidbody rb;
+    [Header("UI Settings")]
+    public TextMeshProUGUI speedText;
 
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody>();
-        enabled = false;
-    }
+    [Header("Settings")]
+    public float motorTorque = 1500f;
+    public float breakTorque = 3000f;
+    public float steeringAngle = 25f;
+    public float centerOfMassOffset = -0.7f;
+    public float maxSpeedKmh = 80f;
+
+    [Header("Stability Settings")]
+    public float stabilitySmoothness = 10f;
+    public float tiltAmount = 20f;
+
+    [HideInInspector] public Rigidbody rb;
+    private float moveInput;
+    private float steerInput;
 
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        rb.centerOfMass = new Vector3(0, centerOfMassOffset, -0.5f);
+        this.enabled = false;
+    }
 
-        rb.centerOfMass = new Vector3(0, -0.8f, 0);
+    void Update()
+    {
+        moveInput = Input.GetAxis("Vertical");
+        steerInput = Input.GetAxis("Horizontal");
 
+        // แสดงผลความเร็วบน UI
+        DisplaySpeed();
 
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
-        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        if (Input.GetKey(KeyCode.Space))
+            ApplyBrakes(breakTorque);
+        else
+            ApplyBrakes(0);
+    }
+
+    void DisplaySpeed()
+    {
+        if (speedText != null)
+        {
+            // คำนวณความเร็ว KM/H
+            float currentSpeedKmh = rb.linearVelocity.magnitude * 3.6f;
+            // แสดงผลเป็นตัวเลขจำนวนเต็ม
+            speedText.text = currentSpeedKmh.ToString("0") + " KM/H";
+        }
     }
 
     void FixedUpdate()
     {
-        Move();
-        Turn();
-        AlignToGround();
+        HandleMotor();
+        HandleSteering();
+        UpdateWheelVisuals();
+        ApplyStability();
     }
 
-
-
-    void Move()
+    void HandleMotor()
     {
-        float v = Input.GetAxis("Vertical");
-        rb.AddForce(transform.forward * v * speed * Time.fixedDeltaTime, ForceMode.Force);
-    }
+        float currentSpeedKmh = rb.linearVelocity.magnitude * 3.6f;
 
-    void Turn()
-    {
-        float h = Input.GetAxis("Horizontal");
-        Quaternion turn =
-            Quaternion.Euler(0, h * turnSpeed * Time.fixedDeltaTime, 0);
-
-        rb.MoveRotation(rb.rotation * turn);
-    }
-
-
-
-    void AlignToGround()
-    {
-        Ray ray = new Ray(transform.position + Vector3.up * 0.6f, Vector3.down);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, groundCheckDistance, groundLayer))
+        if (currentSpeedKmh < maxSpeedKmh)
         {
-            Quaternion targetRotation =
-                Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+            backWheel.motorTorque = moveInput * motorTorque;
+        }
+        else
+        {
+            backWheel.motorTorque = 0;
+        }
+    }
 
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                targetRotation,
-                alignSpeed * Time.fixedDeltaTime
-            );
+    void ApplyStability()
+    {
+        Quaternion targetRotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
+
+        if (Mathf.Abs(steerInput) > 0.1f)
+        {
+            float leanAngle = -steerInput * tiltAmount;
+            targetRotation *= Quaternion.Euler(0, 0, leanAngle);
         }
 
+        Quaternion predictedRotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * stabilitySmoothness);
+        rb.MoveRotation(predictedRotation);
 
-        Debug.DrawRay(
-            transform.position + Vector3.up * 0.6f,
-            Vector3.down * groundCheckDistance,
-            Color.yellow
-        );
+        if (Mathf.Abs(steerInput) > 0.1f)
+        {
+            float turnHelp = steerInput * 50f * rb.linearVelocity.magnitude;
+            rb.AddRelativeTorque(Vector3.up * turnHelp);
+        }
+    }
+
+    void HandleSteering()
+    {
+        frontWheel.steerAngle = steerInput * steeringAngle;
+    }
+
+    void ApplyBrakes(float force)
+    {
+        frontWheel.brakeTorque = force;
+        backWheel.brakeTorque = force;
+    }
+
+    void OnDisable()
+    {
+        moveInput = 0; steerInput = 0;
+        if (frontWheel != null) { frontWheel.motorTorque = 0; frontWheel.steerAngle = 0; frontWheel.brakeTorque = breakTorque; }
+        if (backWheel != null) { backWheel.motorTorque = 0; backWheel.brakeTorque = breakTorque; }
+    }
+
+    void UpdateWheelVisuals()
+    {
+        UpdateSingleWheel(frontWheel, frontWheelMesh);
+        UpdateSingleWheel(backWheel, backWheelMesh);
+
+        
+        if (frontMudguard != null)
+        {
+            Vector3 pos; Quaternion rot;
+            frontWheel.GetWorldPose(out pos, out rot);
+
+            frontMudguard.position = pos;
+
+            
+            Vector3 euler = rot.eulerAngles;
+            frontMudguard.rotation = Quaternion.Euler(transform.eulerAngles.x, euler.y, transform.eulerAngles.z);
+        }
+    }
+
+    void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
+    {
+        if (wheelTransform == null) return;
+        Vector3 pos; Quaternion rot;
+        wheelCollider.GetWorldPose(out pos, out rot);
+        wheelTransform.position = pos;
+        wheelTransform.rotation = rot;
     }
 }
