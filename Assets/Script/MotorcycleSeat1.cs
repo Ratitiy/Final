@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MotorcycleSeat : MonoBehaviour
+public class MotorcycleSeat1 : MonoBehaviour
 {
     public Transform seatPoint;
-    public MotocycleV2 motorcycle;
+    public Motorcycle motorcycle;
 
 
     
