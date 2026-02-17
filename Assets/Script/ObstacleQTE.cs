@@ -48,7 +48,7 @@ public class QuickTimeEventObstacle : MonoBehaviour
         if (player.GetComponent<Move>()) player.GetComponent<Move>().enabled = false;
         if (player.GetComponent<CharacterController>()) player.GetComponent<CharacterController>().enabled = false;
         Motorcycle bike = player.GetComponent<Motorcycle>();
-        if (bike != null)
+        /*if (bike != null)
         {
             bike.isDriving = false;
             Rigidbody rb = player.GetComponent<Rigidbody>();
@@ -57,7 +57,7 @@ public class QuickTimeEventObstacle : MonoBehaviour
                 wasKinematic = rb.isKinematic; 
                 rb.isKinematic = true;         
             }
-        }
+        }*/
         if (qtePanel != null) qtePanel.SetActive(true);
         UpdateButtonVisuals();
     }
@@ -132,7 +132,7 @@ public class QuickTimeEventObstacle : MonoBehaviour
             if (playerRef.GetComponent<CharacterController>()) playerRef.GetComponent<CharacterController>().enabled = true;
 
             Motorcycle bike = playerRef.GetComponent<Motorcycle>();
-            if (bike != null)
+            /*if (bike != null)
             {
                 Rigidbody rb = playerRef.GetComponent<Rigidbody>();
                 if (rb != null)
@@ -140,7 +140,7 @@ public class QuickTimeEventObstacle : MonoBehaviour
                     rb.isKinematic = wasKinematic;
                 }
                 bike.isDriving = true;
-            }
+            }*/
         }
         Destroy(gameObject);
     }
