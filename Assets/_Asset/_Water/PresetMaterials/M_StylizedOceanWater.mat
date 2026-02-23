@@ -101,22 +101,22 @@ Material:
     - _CaveBlend: 0
     - _CaveDistortion: 0
     - _DepthCompareDistance: 0.1
-    - _DepthFadeDistance: 10
+    - _DepthFadeDistance: 2
     - _FoamBlend: 0.09
     - _FresnelPower: 1
     - _GradientRefractionScale: 10
     - _HorizonDistance: 78
     - _IntersectionFoamBlend: 1.09
-    - _IntersectionFoamCutoff: 4.33
-    - _IntersectionFoamDepth: 0.19
+    - _IntersectionFoamCutoff: 5.8
+    - _IntersectionFoamDepth: 0.88
     - _IntersectionFoamDirection: 0.65
-    - _IntersectionFoamFade: 0.22
-    - _IntersectionFoamSpeed: 3.17
+    - _IntersectionFoamFade: 1.48
+    - _IntersectionFoamSpeed: 6.29
     - _IntersectionFoamTiling: 1.11
     - _LightingHardness: 0.39
     - _LightingSmoothness: 12.34
     - _NormalScale: 1.61
-    - _NormalSpeed: 0.07
+    - _NormalSpeed: 0.16
     - _NormalStrength: 1.71
     - _OrthographicCamSize: 0
     - _PERSPECTIVE: 1
@@ -126,7 +126,7 @@ Material:
     - _REFLECTIONS: 0
     - _ReflectionBlend: 0.594
     - _ReflectionDistortion: 0.38
-    - _RefractionScale: 7.97
+    - _RefractionScale: 10
     - _RefractionSpeed: 0.01
     - _RefractionStrength: 0
     - _RippleStrength: 83.62
@@ -142,9 +142,9 @@ Material:
     - _WaterAlpha: 1
     - _WaterMetallic: 0.559
     - _WaterSmoothness: 0.581
-    - _WaveLength: 1.82
-    - _WaveSpeed: 0.2
-    - _WaveSteepness: 0.42
+    - _WaveLength: 1.13
+    - _WaveSpeed: 5
+    - _WaveSteepness: 0.66
     - _WaveStepness: 0.35
     m_Colors:
     - _BaseColor: {r: 0, g: 0.1989687, b: 1.110646, a: 1}
