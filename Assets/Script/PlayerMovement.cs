@@ -41,8 +41,10 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 inputDir = new Vector3(horizontal, 0f, vertical).normalized;
 
-        // 🎬 Animation
-        animator.SetFloat("Speed", inputDir.magnitude);
+        if (!animator.GetBool("IsRiding"))
+        {
+            animator.SetFloat("Speed", inputDir.magnitude, 0.1f, Time.deltaTime);
+        }
 
         if (inputDir.magnitude >= 0.1f)
         {
