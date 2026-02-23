@@ -26,7 +26,7 @@ public class MotocycleV2 : MonoBehaviour
     [Header("Stability Settings")]
     public float stabilitySmoothness = 10f;
     public float tiltAmount = 20f;
-    public LayerMask groundLayer = ~0; // เพิ่ม LayerMask เพื่อให้ Raycast โดนเฉพาะพื้น (ค่า default คือทุกอย่าง)
+    public LayerMask groundLayer = ~0;
 
     [HideInInspector] public Rigidbody rb;
     private float moveInput;
@@ -90,7 +90,7 @@ public class MotocycleV2 : MonoBehaviour
         Quaternion targetRotation;
         RaycastHit hit;
 
-        // ใช้ forward ปัจจุบันจริง ๆ (ไม่ตัดแกน Z ทิ้ง)
+        
         Vector3 currentForward = transform.forward;
 
         if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out hit, 3.0f, groundLayer))
@@ -103,10 +103,10 @@ public class MotocycleV2 : MonoBehaviour
             targetRotation = transform.rotation;
         }
 
-        // Lean ตอนเลี้ยว (แต่ไม่บังคับ 0 เมื่อปล่อยปุ่ม)
+        
         float leanAngle = -steerInput * tiltAmount;
 
-        // เพิ่มการคืนตัวแบบค่อยเป็นค่อยไป
+       
         float autoBalance = Mathf.Lerp(transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z,
                                        leanAngle,
                                        Time.fixedDeltaTime * stabilitySmoothness);
@@ -123,7 +123,7 @@ public class MotocycleV2 : MonoBehaviour
             Time.fixedDeltaTime * stabilitySmoothness
         ));
 
-        // ช่วยเลี้ยว
+        
         if (Mathf.Abs(steerInput) > 0.1f)
         {
             float turnHelp = steerInput * 40f * rb.linearVelocity.magnitude;

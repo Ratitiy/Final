@@ -38,6 +38,18 @@ public class MotorcycleSeat : MonoBehaviour
 
     void Mount(GameObject player)
     {
+        if (motorcycle == null)
+        {
+            Debug.LogError("Motorcycle is not assigned in Inspector!");
+            return;
+        }
+
+        if (seatPoint == null)
+        {
+            Debug.LogError("SeatPoint is not assigned in Inspector!");
+            return;
+        }
+
         currentPlayer = player;
 
         var collider = player.GetComponent<Collider>();
@@ -47,8 +59,12 @@ public class MotorcycleSeat : MonoBehaviour
         player.transform.position = seatPoint.position;
         player.transform.rotation = seatPoint.rotation;
 
-        player.GetComponent<Move>().enabled = false;
-        player.GetComponent<CharacterController>().enabled = false;
+        var move = player.GetComponent<PlayerMovement>();
+        if (move) move.enabled = false;
+
+        var cc = player.GetComponent<CharacterController>();
+        if (cc) cc.enabled = false;
+
         motorcycle.enabled = true;
 
         var mesh = player.GetComponentInChildren<SkinnedMeshRenderer>();
@@ -94,9 +110,9 @@ public class MotorcycleSeat : MonoBehaviour
 
         currentPlayer.GetComponent<CharacterController>().enabled = true;
         if (cc != null) cc.Move(Vector3.up * 0.001f);
-        if (currentPlayer.GetComponent<Move>())
+        if (currentPlayer.GetComponent<PlayerMovement>())
         {
-            currentPlayer.GetComponent<Move>().enabled = true;
+            currentPlayer.GetComponent<PlayerMovement>().enabled = true;
         }
 
         var mesh = currentPlayer.GetComponentInChildren<SkinnedMeshRenderer>();
