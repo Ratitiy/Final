@@ -40,21 +40,21 @@ public class MotorcycleSeat : MonoBehaviour
     {
         currentPlayer = player;
 
-        var collider = player.GetComponent<Collider>();
-        if (collider) collider.enabled = false;
+        
+        PlayerMovement pm = player.GetComponent<PlayerMovement>();
+        if (pm != null)
+            pm.enabled = false;
 
-        player.transform.SetParent(motorcycle.transform);
-        player.transform.position = seatPoint.position;
-        player.transform.rotation = seatPoint.rotation;
+        CharacterController cc = player.GetComponent<CharacterController>();
+        if (cc != null)
+            cc.enabled = false;
 
-        player.GetComponent<Move>().enabled = false;
-        player.GetComponent<CharacterController>().enabled = false;
+        
+        player.transform.SetParent(seatPoint);
+        player.transform.localPosition = Vector3.zero;
+        player.transform.localRotation = Quaternion.identity;
+
         motorcycle.enabled = true;
-
-        var mesh = player.GetComponentInChildren<SkinnedMeshRenderer>();
-        if (mesh) mesh.enabled = false;
-
-        StartCoroutine(EnableDismountCooldown());
     }
 
     IEnumerator EnableDismountCooldown()
@@ -65,44 +65,22 @@ public class MotorcycleSeat : MonoBehaviour
 
     void Dismount()
     {
-        motorcycle.enabled = false;
-        currentPlayer.transform.SetParent(null);
-        Vector3 dismountPos = seatPoint.position + (transform.right * -1.5f);
+        if (currentPlayer == null) return;
 
-        RaycastHit hit;
-        float groundY = transform.position.y;
-        if (Physics.Raycast(dismountPos + Vector3.up * 2f, Vector3.down, out hit, 5f))
-        {
-            groundY = hit.point.y;
-        }
+        
+        currentPlayer.transform.SetParent(null);
+
+        
+        PlayerMovement pm = currentPlayer.GetComponent<PlayerMovement>();
+        if (pm != null)
+            pm.enabled = true;
+
         CharacterController cc = currentPlayer.GetComponent<CharacterController>();
         if (cc != null)
-        {
-            float heightOffset = (cc.height * 0.5f) - cc.center.y;
-            dismountPos.y = groundY + heightOffset + 0.05f;
-        }
-        else
-        {
-            dismountPos.y = groundY + 1.0f;
-        }
+            cc.enabled = true;
 
-        currentPlayer.transform.position = dismountPos;
-        currentPlayer.transform.rotation = Quaternion.Euler(0, currentPlayer.transform.eulerAngles.y, 0);
-
-        var collider = currentPlayer.GetComponent<Collider>();
-        if (collider) collider.enabled = true;
-
-        currentPlayer.GetComponent<CharacterController>().enabled = true;
-        if (cc != null) cc.Move(Vector3.up * 0.001f);
-        if (currentPlayer.GetComponent<Move>())
-        {
-            currentPlayer.GetComponent<Move>().enabled = true;
-        }
-
-        var mesh = currentPlayer.GetComponentInChildren<SkinnedMeshRenderer>();
-        if (mesh) mesh.enabled = true;
+        motorcycle.enabled = false;
 
         currentPlayer = null;
-        canDismount = false;
     }
 }
