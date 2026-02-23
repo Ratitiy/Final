@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 1.8f;
     public float runSpeed = 5f;
     public float rotationSmoothTime = 0.1f;
+    Animator animator;
 
     private CharacterController controller;
     private float rotationVelocity;
@@ -15,11 +16,11 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
     {
-       
         if (controller == null || !controller.enabled)
             return;
 
@@ -28,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             controller.SimpleMove(Vector3.zero);
+            animator.SetFloat("Speed", 0f);
             return;
         }
 
@@ -38,6 +40,9 @@ public class PlayerMovement : MonoBehaviour
         float vertical = Input.GetAxis("Vertical");
 
         Vector3 inputDir = new Vector3(horizontal, 0f, vertical).normalized;
+
+        // 🎬 Animation
+        animator.SetFloat("Speed", inputDir.magnitude);
 
         if (inputDir.magnitude >= 0.1f)
         {
