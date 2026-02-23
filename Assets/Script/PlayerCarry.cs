@@ -5,6 +5,8 @@ public class PlayerCarry : MonoBehaviour
     public Transform holdPoint;
     public GameObject carriedItem;
 
+
+
     public bool IsCarrying()
     {
         return carriedItem != null;

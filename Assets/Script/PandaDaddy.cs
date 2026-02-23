@@ -4,7 +4,7 @@ public class PandaDaddy : MonoBehaviour
 {
     public GameObject packagePrefab;
     public Transform spawnPoint;
-    public Transform[] deliveryTargets;
+    public DeliveryTarget[] deliveryNPCs;
 
     public Transform currentTarget;
 
@@ -16,10 +16,14 @@ public class PandaDaddy : MonoBehaviour
             return;
         }
 
-        GameObject package = Instantiate(packagePrefab, spawnPoint.position, Quaternion.identity);
+        GameObject package =
+            Instantiate(packagePrefab, spawnPoint.position, Quaternion.identity);
 
-        currentTarget = deliveryTargets[Random.Range(0, deliveryTargets.Length)];
+        DeliveryTarget randomTarget =
+            deliveryNPCs[Random.Range(0, deliveryNPCs.Length)];
 
-        DeliveryManager.Instance.StartDelivery(package, currentTarget);
+        DeliveryManager.Instance.StartDelivery(package, randomTarget.transform);
+
+        Debug.Log("ส่งไปที่: " + randomTarget.name);
     }
 }

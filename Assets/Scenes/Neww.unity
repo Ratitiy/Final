@@ -3043,7 +3043,7 @@ Transform:
   m_GameObject: {fileID: 449731678}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.685, z: -1.346}
+  m_LocalPosition: {x: 0, y: 1.685, z: -1.462}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12732,7 +12732,7 @@ GameObject:
   - component: {fileID: 2075832401}
   - component: {fileID: 2075832400}
   m_Layer: 5
-  m_Name: Image
+  m_Name: DeliveryArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12770,6 +12770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 543450652371260658}
+  cameraTransform: {fileID: 947544231}
   distanceText: {fileID: 366331103}
 --- !u!114 &2075832401
 MonoBehaviour:
@@ -17064,8 +17065,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1.88}
-  m_Center: {x: 0, y: 1.92, z: 0}
+  m_Size: {x: 1, y: 1.56, z: 2.96}
+  m_Center: {x: 0, y: 2.25, z: 0}
 --- !u!1 &3044776159592379880
 GameObject:
   m_ObjectHideFlags: 0
@@ -24219,7 +24220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0804059874873d84fa18eed8aba314a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPackage: {fileID: 6724418572605743202, guid: eb94ab1a70f0f5e45afcc7c2061c44ca, type: 3}
+  currentPackage: {fileID: 0}
   currentTarget: {fileID: 0}
   rewardMoney: 100
   hasActiveDelivery: 0
