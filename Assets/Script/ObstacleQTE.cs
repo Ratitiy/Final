@@ -8,9 +8,13 @@ public class QuickTimeEventObstacle : MonoBehaviour
     public float decaySpeed = 20f;
     public float powerPerPress = 15f;
 
-    [Header("Visual Settings")]
+    [Header("Visual Settings (Scale)")]
     public Vector3 activeScale = new Vector3(1.3f, 1.3f, 1f);
     public Vector3 inactiveScale = new Vector3(0.8f, 0.8f, 1f);
+
+    [Header("Visual Settings (Color)")]
+    public Color activeColor = Color.white; 
+    public Color inactiveColor = new Color(0.4f, 0.4f, 0.4f, 1f); 
 
     [Header("UI References")]
     public GameObject qtePanel;
@@ -23,6 +27,7 @@ public class QuickTimeEventObstacle : MonoBehaviour
     private bool isEventActive = false;
     private GameObject playerRef;
     private bool isTurnQ = true;
+
     private bool wasKinematic;
 
     void Start()
@@ -47,17 +52,18 @@ public class QuickTimeEventObstacle : MonoBehaviour
 
         if (player.GetComponent<Move>()) player.GetComponent<Move>().enabled = false;
         if (player.GetComponent<CharacterController>()) player.GetComponent<CharacterController>().enabled = false;
-        Motorcycle bike = player.GetComponent<Motorcycle>();
-        /*if (bike != null)
+
+        MotocycleV2 bike = player.GetComponent<MotocycleV2>();
+        if (bike != null)
         {
-            bike.isDriving = false;
             Rigidbody rb = player.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                wasKinematic = rb.isKinematic; 
-                rb.isKinematic = true;         
+                wasKinematic = rb.isKinematic;
+                rb.isKinematic = true;
             }
-        }*/
+        }
+
         if (qtePanel != null) qtePanel.SetActive(true);
         UpdateButtonVisuals();
     }
@@ -99,15 +105,24 @@ public class QuickTimeEventObstacle : MonoBehaviour
     {
         if (qButtonIcon == null || eButtonIcon == null) return;
 
+        Image qImage = qButtonIcon.GetComponent<Image>();
+        Image eImage = eButtonIcon.GetComponent<Image>();
+
         if (isTurnQ)
         {
             qButtonIcon.localScale = activeScale;
             eButtonIcon.localScale = inactiveScale;
+
+            if (qImage != null) qImage.color = activeColor;
+            if (eImage != null) eImage.color = inactiveColor;
         }
         else
         {
             eButtonIcon.localScale = activeScale;
             qButtonIcon.localScale = inactiveScale;
+
+            if (eImage != null) eImage.color = activeColor;
+            if (qImage != null) qImage.color = inactiveColor;
         }
     }
 
@@ -119,7 +134,6 @@ public class QuickTimeEventObstacle : MonoBehaviour
             energySlider.value = ratio;
         }
     }
-
     void WinQTE()
     {
         Debug.Log("Success");
@@ -131,16 +145,13 @@ public class QuickTimeEventObstacle : MonoBehaviour
             if (playerRef.GetComponent<Move>()) playerRef.GetComponent<Move>().enabled = true;
             if (playerRef.GetComponent<CharacterController>()) playerRef.GetComponent<CharacterController>().enabled = true;
 
-            Motorcycle bike = playerRef.GetComponent<Motorcycle>();
-            /*if (bike != null)
+            MotocycleV2 bike = playerRef.GetComponent<MotocycleV2>();
+            if (bike != null)
             {
                 Rigidbody rb = playerRef.GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    rb.isKinematic = wasKinematic;
-                }
-                bike.isDriving = true;
-            }*/
+                if (rb != null) rb.isKinematic = wasKinematic;
+                bike.enabled = true;
+            }
         }
         Destroy(gameObject);
     }
