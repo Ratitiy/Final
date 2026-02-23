@@ -37,11 +37,11 @@ public class PlayerMovement : MonoBehaviour
 
         if (inputDir.magnitude >= 0.1f)
         {
-            // มุมที่ควรหมุนไป (อิงกล้องเฉพาะแกน Y)
+            
             float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg
                                 + Camera.main.transform.eulerAngles.y;
 
-            // หมุนแบบ Smooth (ลื่นกว่า LerpAngle)
+            
             float angle = Mathf.SmoothDampAngle(
                 transform.eulerAngles.y,
                 targetAngle,
@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
 
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-            // ทิศเดิน
+           
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
             bool isRunning = Input.GetKey(KeyCode.LeftShift);
