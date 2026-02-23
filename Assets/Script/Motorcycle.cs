@@ -43,6 +43,7 @@ public class Motorcycle : MonoBehaviour
         moveInput = Input.GetAxis("Vertical");
         steerInput = Input.GetAxis("Horizontal");
 
+        // แสดงผลความเร็วบน UI
         DisplaySpeed();
 
         if (Input.GetKey(KeyCode.Space))
@@ -55,7 +56,9 @@ public class Motorcycle : MonoBehaviour
     {
         if (speedText != null)
         {
+            // คำนวณความเร็ว KM/H
             float currentSpeedKmh = rb.linearVelocity.magnitude * 3.6f;
+            // แสดงผลเป็นตัวเลขจำนวนเต็ม
             speedText.text = currentSpeedKmh.ToString("0") + " KM/H";
         }
     }
@@ -146,12 +149,5 @@ public class Motorcycle : MonoBehaviour
         wheelCollider.GetWorldPose(out pos, out rot);
         wheelTransform.position = pos;
         wheelTransform.rotation = rot;
-    }
-    public void Interact(GameObject player)
-    {
-        this.enabled = true;
-
-        if (player.GetComponent<Move>()) player.GetComponent<Move>().enabled = false;
-        if (player.GetComponent<CharacterController>()) player.GetComponent<CharacterController>().enabled = false;
     }
 }

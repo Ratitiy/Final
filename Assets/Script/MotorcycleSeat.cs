@@ -4,15 +4,18 @@ using System.Collections;
 public class MotorcycleSeat : MonoBehaviour
 {
     public Transform seatPoint;
-    public Motorcycle motorcycle;
+    public MotocycleV2 motorcycle;
 
-    [Header("Cameras")]
-    public GameObject playerCamera;
-    public GameObject bikeCamera;
+
+    
+    public GameObject playerCamera; 
+    public GameObject bikeCamera;   
+
 
     GameObject currentPlayer;
     bool canDismount = false;
 
+   
     public void Interact(GameObject player)
     {
         if (currentPlayer == null)
@@ -46,13 +49,10 @@ public class MotorcycleSeat : MonoBehaviour
 
         player.GetComponent<Move>().enabled = false;
         player.GetComponent<CharacterController>().enabled = false;
-
-        if (motorcycle != null) motorcycle.enabled = true;
+        motorcycle.enabled = true;
 
         var mesh = player.GetComponentInChildren<SkinnedMeshRenderer>();
         if (mesh) mesh.enabled = false;
-        if (playerCamera != null) playerCamera.SetActive(false); 
-        if (bikeCamera != null) bikeCamera.SetActive(true);    
 
         StartCoroutine(EnableDismountCooldown());
     }
@@ -65,7 +65,7 @@ public class MotorcycleSeat : MonoBehaviour
 
     void Dismount()
     {
-        if (motorcycle != null) motorcycle.enabled = false;
+        motorcycle.enabled = false;
         currentPlayer.transform.SetParent(null);
         Vector3 dismountPos = seatPoint.position + (transform.right * -1.5f);
 
@@ -101,9 +101,6 @@ public class MotorcycleSeat : MonoBehaviour
 
         var mesh = currentPlayer.GetComponentInChildren<SkinnedMeshRenderer>();
         if (mesh) mesh.enabled = true;
-
-        if (playerCamera != null) playerCamera.SetActive(true); 
-        if (bikeCamera != null) bikeCamera.SetActive(false);    
 
         currentPlayer = null;
         canDismount = false;
