@@ -50,7 +50,7 @@ public class QuickTimeEventObstacle : MonoBehaviour
         currentEnergy = 0;
         isTurnQ = true;
 
-        if (player.GetComponent<Move>()) player.GetComponent<Move>().enabled = false;
+        if (player.GetComponent<PlayerMovement>()) player.GetComponent<PlayerMovement>().enabled = false;
         if (player.GetComponent<CharacterController>()) player.GetComponent<CharacterController>().enabled = false;
 
         MotocycleV2 bike = player.GetComponent<MotocycleV2>();
@@ -142,7 +142,7 @@ public class QuickTimeEventObstacle : MonoBehaviour
 
         if (playerRef != null)
         {
-            if (playerRef.GetComponent<Move>()) playerRef.GetComponent<Move>().enabled = true;
+            if (playerRef.GetComponent<PlayerMovement>()) playerRef.GetComponent<PlayerMovement>().enabled = true;
             if (playerRef.GetComponent<CharacterController>()) playerRef.GetComponent<CharacterController>().enabled = true;
 
             MotocycleV2 bike = playerRef.GetComponent<MotocycleV2>();
