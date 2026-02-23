@@ -18,14 +18,14 @@ public class Motorcycle : MonoBehaviour
 
     [Header("Settings")]
     public float motorTorque = 1500f;
-    public float breakTorque = 3000f;
+    public float brakeTorque = 3000f;
     public float steeringAngle = 25f;
     public float centerOfMassOffset = -0.7f;
     public float maxSpeedKmh = 80f;
 
     [Header("Stability Settings")]
-    public float stabilitySmoothness = 10f;
-    public float tiltAmount = 20f;
+    public float tiltAmount = 15f;          // ความแรงการเอน
+    public float stabilityForce = 5f;       // กันล้มแบบนุ่ม ๆ
 
     [HideInInspector] public Rigidbody rb;
     private float moveInput;
@@ -34,8 +34,13 @@ public class Motorcycle : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
         rb.centerOfMass = new Vector3(0, centerOfMassOffset, -0.5f);
-        this.enabled = false;
+
+        rb.linearDamping = 0.2f;
+        rb.angularDamping = 2f;
+
+        this.enabled = false; // เปิดเมื่อขึ้นรถ
     }
 
     void Update()
@@ -43,32 +48,20 @@ public class Motorcycle : MonoBehaviour
         moveInput = Input.GetAxis("Vertical");
         steerInput = Input.GetAxis("Horizontal");
 
-        // แสดงผลความเร็วบน UI
-        DisplaySpeed();
+        DisplaySpeed();
 
         if (Input.GetKey(KeyCode.Space))
-            ApplyBrakes(breakTorque);
+            ApplyBrakes(brakeTorque);
         else
             ApplyBrakes(0);
-    }
-
-    void DisplaySpeed()
-    {
-        if (speedText != null)
-        {
-            // คำนวณความเร็ว KM/H
-            float currentSpeedKmh = rb.linearVelocity.magnitude * 3.6f;
-            // แสดงผลเป็นตัวเลขจำนวนเต็ม
-            speedText.text = currentSpeedKmh.ToString("0") + " KM/H";
-        }
     }
 
     void FixedUpdate()
     {
         HandleMotor();
         HandleSteering();
-        UpdateWheelVisuals();
         ApplyStability();
+        UpdateWheelVisuals();
     }
 
     void HandleMotor()
@@ -76,33 +69,9 @@ public class Motorcycle : MonoBehaviour
         float currentSpeedKmh = rb.linearVelocity.magnitude * 3.6f;
 
         if (currentSpeedKmh < maxSpeedKmh)
-        {
             backWheel.motorTorque = moveInput * motorTorque;
-        }
         else
-        {
             backWheel.motorTorque = 0;
-        }
-    }
-
-    void ApplyStability()
-    {
-        Quaternion targetRotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
-
-        if (Mathf.Abs(steerInput) > 0.1f)
-        {
-            float leanAngle = -steerInput * tiltAmount;
-            targetRotation *= Quaternion.Euler(0, 0, leanAngle);
-        }
-
-        Quaternion predictedRotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * stabilitySmoothness);
-        rb.MoveRotation(predictedRotation);
-
-        if (Mathf.Abs(steerInput) > 0.1f)
-        {
-            float turnHelp = steerInput * 50f * rb.linearVelocity.magnitude;
-            rb.AddRelativeTorque(Vector3.up * turnHelp);
-        }
     }
 
     void HandleSteering()
@@ -116,11 +85,30 @@ public class Motorcycle : MonoBehaviour
         backWheel.brakeTorque = force;
     }
 
-    void OnDisable()
+    // 🔥 ระบบเอนแบบใช้แรงจริง ไม่ใช้ MoveRotation แล้ว
+    void ApplyStability()
     {
-        moveInput = 0; steerInput = 0;
-        if (frontWheel != null) { frontWheel.motorTorque = 0; frontWheel.steerAngle = 0; frontWheel.brakeTorque = breakTorque; }
-        if (backWheel != null) { backWheel.motorTorque = 0; backWheel.brakeTorque = breakTorque; }
+        float speed = rb.linearVelocity.magnitude;
+
+        // เอนตามการเลี้ยว
+        if (Mathf.Abs(steerInput) > 0.1f && speed > 1f)
+        {
+            float leanTorque = -steerInput * tiltAmount * 50f;
+            rb.AddRelativeTorque(Vector3.forward * leanTorque);
+        }
+
+        // กันล้มแบบนุ่ม ๆ (ไม่ดีด)
+        float uprightTorque = -transform.right.x * stabilityForce;
+        rb.AddRelativeTorque(Vector3.forward * uprightTorque);
+    }
+
+    void DisplaySpeed()
+    {
+        if (speedText != null)
+        {
+            float currentSpeedKmh = rb.linearVelocity.magnitude * 3.6f;
+            speedText.text = currentSpeedKmh.ToString("0") + " KM/H";
+        }
     }
 
     void UpdateWheelVisuals()
@@ -128,7 +116,6 @@ public class Motorcycle : MonoBehaviour
         UpdateSingleWheel(frontWheel, frontWheelMesh);
         UpdateSingleWheel(backWheel, backWheelMesh);
 
-        
         if (frontMudguard != null)
         {
             Vector3 pos; Quaternion rot;
@@ -136,7 +123,6 @@ public class Motorcycle : MonoBehaviour
 
             frontMudguard.position = pos;
 
-            
             Vector3 euler = rot.eulerAngles;
             frontMudguard.rotation = Quaternion.Euler(transform.eulerAngles.x, euler.y, transform.eulerAngles.z);
         }
@@ -145,9 +131,30 @@ public class Motorcycle : MonoBehaviour
     void UpdateSingleWheel(WheelCollider wheelCollider, Transform wheelTransform)
     {
         if (wheelTransform == null) return;
+
         Vector3 pos; Quaternion rot;
         wheelCollider.GetWorldPose(out pos, out rot);
+
         wheelTransform.position = pos;
         wheelTransform.rotation = rot;
+    }
+
+    void OnDisable()
+    {
+        moveInput = 0;
+        steerInput = 0;
+
+        if (frontWheel != null)
+        {
+            frontWheel.motorTorque = 0;
+            frontWheel.steerAngle = 0;
+            frontWheel.brakeTorque = brakeTorque;
+        }
+
+        if (backWheel != null)
+        {
+            backWheel.motorTorque = 0;
+            backWheel.brakeTorque = brakeTorque;
+        }
     }
 }

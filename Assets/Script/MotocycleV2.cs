@@ -21,7 +21,7 @@ public class MotocycleV2 : MonoBehaviour
     public float breakTorque = 3000f;
     public float steeringAngle = 25f;
     public float centerOfMassOffset = -0.7f;
-    public float maxSpeedKmh = 80f;
+    public float maxSpeedKmh = 40f;
 
     [Header("Stability Settings")]
     public float stabilitySmoothness = 10f;
@@ -74,45 +74,59 @@ public class MotocycleV2 : MonoBehaviour
     {
         float currentSpeedKmh = rb.linearVelocity.magnitude * 3.6f;
 
-        if (currentSpeedKmh < maxSpeedKmh)
+        // ใส่แรงเครื่องปกติ
+        backWheel.motorTorque = moveInput * motorTorque;
+
+        // จำกัดความเร็วจริง ๆ
+        if (currentSpeedKmh > maxSpeedKmh)
         {
-            backWheel.motorTorque = moveInput * motorTorque;
-        }
-        else
-        {
-            backWheel.motorTorque = 0;
+            rb.linearVelocity = rb.linearVelocity.normalized * (maxSpeedKmh / 3.6f);
         }
     }
 
-    
+
     void ApplyStability()
     {
         Quaternion targetRotation;
         RaycastHit hit;
 
-        
+        // ใช้ forward ปัจจุบันจริง ๆ (ไม่ตัดแกน Z ทิ้ง)
+        Vector3 currentForward = transform.forward;
+
         if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out hit, 3.0f, groundLayer))
         {
-            Vector3 projectedForward = Vector3.ProjectOnPlane(transform.forward, hit.normal);
+            Vector3 projectedForward = Vector3.ProjectOnPlane(currentForward, hit.normal);
             targetRotation = Quaternion.LookRotation(projectedForward, hit.normal);
         }
         else
         {
-            targetRotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
-        }
-        if (Mathf.Abs(steerInput) > 0.1f)
-        {
-            float leanAngle = -steerInput * tiltAmount;
-           
-            targetRotation *= Quaternion.Euler(0, 0, leanAngle);
+            targetRotation = transform.rotation;
         }
 
-        Quaternion predictedRotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * stabilitySmoothness);
-        rb.MoveRotation(predictedRotation);
+        // Lean ตอนเลี้ยว (แต่ไม่บังคับ 0 เมื่อปล่อยปุ่ม)
+        float leanAngle = -steerInput * tiltAmount;
 
+        // เพิ่มการคืนตัวแบบค่อยเป็นค่อยไป
+        float autoBalance = Mathf.Lerp(transform.eulerAngles.z > 180 ? transform.eulerAngles.z - 360 : transform.eulerAngles.z,
+                                       leanAngle,
+                                       Time.fixedDeltaTime * stabilitySmoothness);
+
+        targetRotation = Quaternion.Euler(
+            targetRotation.eulerAngles.x,
+            targetRotation.eulerAngles.y,
+            autoBalance
+        );
+
+        rb.MoveRotation(Quaternion.Slerp(
+            transform.rotation,
+            targetRotation,
+            Time.fixedDeltaTime * stabilitySmoothness
+        ));
+
+        // ช่วยเลี้ยว
         if (Mathf.Abs(steerInput) > 0.1f)
         {
-            float turnHelp = steerInput * 50f * rb.linearVelocity.magnitude;
+            float turnHelp = steerInput * 40f * rb.linearVelocity.magnitude;
             rb.AddRelativeTorque(Vector3.up * turnHelp);
         }
     }
