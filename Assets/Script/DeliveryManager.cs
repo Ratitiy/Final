@@ -7,16 +7,21 @@ public class DeliveryManager : MonoBehaviour
     public GameObject currentPackage;
     public Transform currentTarget;
     public int rewardMoney = 100;
+    public bool hasActiveDelivery = false;
 
     void Awake()
     {
         Instance = this;
+        currentPackage = null;
+        currentTarget = null;
+        hasActiveDelivery = false;
     }
 
     public void StartDelivery(GameObject package, Transform target)
     {
         currentPackage = package;
         currentTarget = target;
+        hasActiveDelivery = true;
     }
 
     public bool HasActiveDelivery()
@@ -27,8 +32,10 @@ public class DeliveryManager : MonoBehaviour
     public void CompleteDelivery()
     {
         Destroy(currentPackage);
+
         currentPackage = null;
         currentTarget = null;
+        hasActiveDelivery = false;
 
         MoneyManager.Instance.AddMoney(rewardMoney);
     }

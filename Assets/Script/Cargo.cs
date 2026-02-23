@@ -1,27 +1,20 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Cargo : MonoBehaviour
 {
-    public Transform cargoPoint;
-    public GameObject storedItem;
-
-    public bool HasItem()
+    public void Interact(GameObject player)
     {
-        return storedItem != null;
-    }
+        PlayerCarry carry = player.GetComponent<PlayerCarry>();
 
-    public void StoreItem(GameObject item)
-    {
-        storedItem = item;
-        item.transform.SetParent(cargoPoint);
-        item.transform.localPosition = Vector3.zero;
-        item.transform.localRotation = Quaternion.identity;
-    }
+        if (carry == null) return;
 
-    public GameObject TakeItem()
-    {
-        GameObject item = storedItem;
-        storedItem = null;
-        return item;
+        if (!carry.IsCarrying())
+        {
+            carry.PickUp(gameObject);
+        }
+        else
+        {
+            Debug.Log("ถือของอยู่แล้ว!");
+        }
     }
 }
