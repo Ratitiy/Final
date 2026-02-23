@@ -104,15 +104,15 @@ Material:
     - _DepthFadeDistance: 2
     - _FoamBlend: 0.09
     - _FresnelPower: 1
-    - _GradientRefractionScale: 10
+    - _GradientRefractionScale: 4
     - _HorizonDistance: 78
     - _IntersectionFoamBlend: 1.09
-    - _IntersectionFoamCutoff: 5.8
+    - _IntersectionFoamCutoff: 4.03
     - _IntersectionFoamDepth: 0.88
-    - _IntersectionFoamDirection: 0.65
-    - _IntersectionFoamFade: 1.48
-    - _IntersectionFoamSpeed: 6.29
-    - _IntersectionFoamTiling: 1.11
+    - _IntersectionFoamDirection: 0.09
+    - _IntersectionFoamFade: 1.28
+    - _IntersectionFoamSpeed: 0.002
+    - _IntersectionFoamTiling: 1.5
     - _LightingHardness: 0.39
     - _LightingSmoothness: 12.34
     - _NormalScale: 1.61
@@ -127,7 +127,7 @@ Material:
     - _ReflectionBlend: 0.594
     - _ReflectionDistortion: 0.38
     - _RefractionScale: 10
-    - _RefractionSpeed: 0.01
+    - _RefractionSpeed: 0.002
     - _RefractionStrength: 0
     - _RippleStrength: 83.62
     - _SecondaryFoamBlend: 0.06
@@ -143,7 +143,7 @@ Material:
     - _WaterMetallic: 0.559
     - _WaterSmoothness: 0.581
     - _WaveLength: 1.13
-    - _WaveSpeed: 5
+    - _WaveSpeed: 0.7
     - _WaveSteepness: 0.66
     - _WaveStepness: 0.35
     m_Colors:
