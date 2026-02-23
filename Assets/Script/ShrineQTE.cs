@@ -60,7 +60,7 @@ public class ShrineQTE : MonoBehaviour
         if (player.GetComponent<Move>()) player.GetComponent<Move>().enabled = false;
         if (player.GetComponent<CharacterController>()) player.GetComponent<CharacterController>().enabled = false;
 
-        Motorcycle bike = player.GetComponent<Motorcycle>();
+        MotocycleV2 bike = player.GetComponent<MotocycleV2>();
         /*if (bike != null)
         {
             // ตัดการควบคุมปุ่ม
@@ -240,7 +240,7 @@ public class ShrineQTE : MonoBehaviour
             if (playerRef.GetComponent<CharacterController>())
                 playerRef.GetComponent<CharacterController>().enabled = wasMovementEnabled;
 
-            Motorcycle bike = playerRef.GetComponent<Motorcycle>();
+            MotocycleV2 bike = playerRef.GetComponent<MotocycleV2>();
             /*if (bike != null)
             {
                 Rigidbody rb = playerRef.GetComponent<Rigidbody>();

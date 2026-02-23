@@ -47,7 +47,7 @@ public class QuickTimeEventObstacle : MonoBehaviour
 
         if (player.GetComponent<Move>()) player.GetComponent<Move>().enabled = false;
         if (player.GetComponent<CharacterController>()) player.GetComponent<CharacterController>().enabled = false;
-        Motorcycle bike = player.GetComponent<Motorcycle>();
+        MotocycleV2 bike = player.GetComponent<MotocycleV2>();
         /*if (bike != null)
         {
             bike.isDriving = false;
@@ -131,7 +131,7 @@ public class QuickTimeEventObstacle : MonoBehaviour
             if (playerRef.GetComponent<Move>()) playerRef.GetComponent<Move>().enabled = true;
             if (playerRef.GetComponent<CharacterController>()) playerRef.GetComponent<CharacterController>().enabled = true;
 
-            Motorcycle bike = playerRef.GetComponent<Motorcycle>();
+            MotocycleV2 bike = playerRef.GetComponent<MotocycleV2>();
             /*if (bike != null)
             {
                 Rigidbody rb = playerRef.GetComponent<Rigidbody>();
