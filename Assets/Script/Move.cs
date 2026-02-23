@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class Move : MonoBehaviour
 {
-    public float speed = 5f;
-    public Transform cam;
+    public float moveSpeed = 5f;
+    public float turnSpeed = 150f;
+    public float gravity = -9.81f;
 
-    CharacterController controller;
+    private CharacterController controller;
+    private float yVelocity;
 
     void Start()
     {
@@ -14,27 +17,22 @@ public class Move : MonoBehaviour
 
     void Update()
     {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
+        float moveInput = Input.GetAxis("Vertical");     // W / S
+        float turnInput = Input.GetAxis("Horizontal");   // A / D
 
-        Vector3 forward = cam.forward;
-        forward.y = 0;
-        forward.Normalize();
+        // ===== หมุนซ้ายขวา =====
+        transform.Rotate(0f, turnInput * turnSpeed * Time.deltaTime, 0f);
 
-        Vector3 right = cam.right;
-        right.y = 0;
+        // ===== เดินหน้า/ถอยหลัง =====
+        Vector3 move = transform.forward * moveInput * moveSpeed;
 
-        Vector3 moveDir = forward * v + right * h;
+        // ===== Gravity =====
+        if (controller.isGrounded && yVelocity < 0)
+            yVelocity = -2f;
 
-        controller.Move(moveDir * speed * Time.deltaTime);
+        yVelocity += gravity * Time.deltaTime;
+        move.y = yVelocity;
 
-        if (moveDir.magnitude > 0.1f)
-        {
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                Quaternion.LookRotation(moveDir),
-                10f * Time.deltaTime
-            );
-        }
+        controller.Move(move * Time.deltaTime);
     }
 }
