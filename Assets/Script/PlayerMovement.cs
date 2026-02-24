@@ -24,6 +24,8 @@ public class PlayerMovement : MonoBehaviour
         if (controller == null || !controller.enabled)
             return;
 
+        if (Time.timeScale == 0f) return;
+
         if (uiOpened)
         {
             Cursor.visible = true;

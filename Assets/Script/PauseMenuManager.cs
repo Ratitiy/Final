@@ -1,6 +1,7 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseMenuManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class PauseMenuManager : MonoBehaviour
     public Slider musicSlider;
     public Slider sfxSlider;
 
+    [Header("Scene Settings")]
+    public string mainMenuSceneName = "MainMenu";
     private bool isPaused = false;
 
     void Start()
@@ -23,6 +26,16 @@ public class PauseMenuManager : MonoBehaviour
 
         if (musicSlider != null) musicSlider.onValueChanged.AddListener(SetMusicVolume);
         if (sfxSlider != null) sfxSlider.onValueChanged.AddListener(SetSFXVolume);
+
+        if (musicSlider != null)
+        {
+            musicSlider.value = PlayerPrefs.GetFloat("SavedMusicVol", 1f);
+        }
+
+        if (sfxSlider != null)
+        {
+            sfxSlider.value = PlayerPrefs.GetFloat("SavedSFXVol", 1f);
+        }
     }
 
     void Update()
@@ -58,8 +71,8 @@ public class PauseMenuManager : MonoBehaviour
         pauseMenuPanel.SetActive(false);
         settingsPanel.SetActive(false);
 
-        // Cursor.lockState = CursorLockMode.Locked;
-        // Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void OpenSettings()
@@ -74,19 +87,23 @@ public class PauseMenuManager : MonoBehaviour
         pauseMenuPanel.SetActive(true);
     }
 
-    public void QuitGame()
+    public void GoToMainMenu()
     {
-        Application.Quit();
-        
+        Time.timeScale = 1f;
+        isPaused = false;
+
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 
     public void SetMusicVolume(float value)
     {
         mainMixer.SetFloat("MusicVol", Mathf.Log10(value) * 20f);
+        PlayerPrefs.SetFloat("SavedMusicVol", value);
     }
 
     public void SetSFXVolume(float value)
     {
         mainMixer.SetFloat("SFXVol", Mathf.Log10(value) * 20f);
+        PlayerPrefs.SetFloat("SavedSFXVol", value);
     }
 }
