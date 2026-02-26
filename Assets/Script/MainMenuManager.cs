@@ -1,41 +1,21 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using UnityEngine.Audio;
 
 public class MainMenuManager : MonoBehaviour
 {
     [Header("UI Panels")]
-    public GameObject mainMenuPanel;
-    public GameObject settingsPanel;
+    public GameObject MainPanel;
+    public GameObject CreditsPanel;
 
     [Header("Level Loading")]
     public LevelLoader levelLoader;
-    public int gameSceneIndex = 1;
-
-    [Header("Audio Settings")]
-    public AudioMixer mainMixer;     
-    public Slider musicSlider;       
-    public Slider sfxSlider;         
+    public int gameSceneIndex = 1;    
 
     void Start()
     {
         Time.timeScale = 1f;
 
-        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
-        if (settingsPanel != null) settingsPanel.SetActive(false);
-
-        if (musicSlider != null)
-        {
-            musicSlider.value = PlayerPrefs.GetFloat("SavedMusicVol", 1f);
-            musicSlider.onValueChanged.AddListener(SetMusicVolume); 
-        }
-
-        if (sfxSlider != null)
-        {
-            sfxSlider.value = PlayerPrefs.GetFloat("SavedSFXVol", 1f);
-            sfxSlider.onValueChanged.AddListener(SetSFXVolume); 
-        }
+        if (MainPanel != null) MainPanel.SetActive(true);
     }
 
     public void PlayGame()
@@ -44,32 +24,20 @@ public class MainMenuManager : MonoBehaviour
         else SceneManager.LoadScene(gameSceneIndex);
     }
 
-    public void OpenSettings()
+    public void OpenCredits()
     {
-        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
-        if (settingsPanel != null) settingsPanel.SetActive(true);
+        if (CreditsPanel != null) CreditsPanel.SetActive(true);
+        if (MainPanel != null) MainPanel.SetActive(false);
     }
 
-    public void CloseSettings()
+    public void CloseCredits()
     {
-        if (settingsPanel != null) settingsPanel.SetActive(false);
-        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+        if (CreditsPanel != null) CreditsPanel.SetActive(false);
+        if (MainPanel != null) MainPanel.SetActive(true);
     }
 
     public void QuitGame()
     {
         Application.Quit();
-    }
-
-    public void SetMusicVolume(float value)
-    {
-        mainMixer.SetFloat("MusicVol", Mathf.Log10(value) * 20f);
-        PlayerPrefs.SetFloat("SavedMusicVol", value);
-    }
-
-    public void SetSFXVolume(float value)
-    {
-        mainMixer.SetFloat("SFXVol", Mathf.Log10(value) * 20f);
-        PlayerPrefs.SetFloat("SavedSFXVol", value);
     }
 }
