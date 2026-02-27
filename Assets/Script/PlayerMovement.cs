@@ -12,11 +12,16 @@ public class PlayerMovement : MonoBehaviour
     private float rotationVelocity;
 
     public bool uiOpened = false;
+    private Transform camTransform;
 
     void Start()
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        if (Camera.main != null)
+        {
+            camTransform = Camera.main.transform;
+        }
     }
 
     void Update()
@@ -38,8 +43,8 @@ public class PlayerMovement : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
 
         Vector3 inputDir = new Vector3(horizontal, 0f, vertical).normalized;
 
@@ -50,24 +55,23 @@ public class PlayerMovement : MonoBehaviour
 
         if (inputDir.magnitude >= 0.1f)
         {
-            float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg
-                                + Camera.main.transform.eulerAngles.y;
+            Vector3 camForward = camTransform.forward;
+            Vector3 camRight = camTransform.right;
 
-            float angle = Mathf.SmoothDampAngle(
-                transform.eulerAngles.y,
-                targetAngle,
-                ref rotationVelocity,
-                rotationSmoothTime
-            );
+            camForward.y = 0f;
+            camRight.y = 0f;
+            camForward.Normalize();
+            camRight.Normalize();
 
+            Vector3 moveDir = (camForward * vertical) + (camRight * horizontal);
+
+            float targetAngle = Mathf.Atan2(moveDir.x, moveDir.z) * Mathf.Rad2Deg;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref rotationVelocity, rotationSmoothTime);
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
             bool isRunning = Input.GetKey(KeyCode.LeftShift);
             float currentSpeed = isRunning ? runSpeed : speed;
-
-            controller.SimpleMove(moveDir * currentSpeed);
+            controller.SimpleMove(moveDir.normalized * currentSpeed);
         }
         else
         {

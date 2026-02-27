@@ -1,143 +1,86 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 
 public class ShrineQTE : MonoBehaviour
 {
-    [Header("Settings")]
-    public int sequenceLength = 6;
-    public float timeLimit = 5.0f;
-
-    [Header("Visual Settings")]
-    public float activeScale = 1.3f;
-    public float normalScale = 1.0f;
-    public Color activeColor = new Color(1f, 1f, 0f, 1f);
-    public Color completedColor = new Color(0f, 1f, 0f, 1f);
-    public Color pendingColor = new Color(1f, 1f, 1f, 1f);
-
-    [Header("Effect")]
-    public float shakeIntensity = 5f;
-    public float shakeDuration = 0.2f;
+    [Header("QTE Settings")]
+    public float timeLimit = 5f;
+    public int sequenceLength = 4;
 
     [Header("UI References")]
     public GameObject qtePanel;
-    public Transform keysContainer;
-    public GameObject keyPrefab;
-    public Slider timeSlider;
+    public Slider timerSlider;
 
+    [Header("Sequence UI")]
+    public Image[] sequenceIconSlots;
+    public GameObject[] checkmarkIcons;
+
+    [Header("WASD Sprites")]
+    public Sprite spriteW;
+    public Sprite spriteA;
+    public Sprite spriteS;
+    public Sprite spriteD;
+
+    private float currentTime;
     private bool isEventActive = false;
-    private List<KeyCode> qteSequence = new List<KeyCode>();
-    private List<GameObject> spawnedKeyObjs = new List<GameObject>();
-    private KeyCode[] validKeys = { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
+    private bool hasPlayed = false;
 
-    private int currentIndex = 0;
-    private float currentTimer;
+    private List<KeyCode> currentSequence = new List<KeyCode>();
+    private int currentStep = 0;
+
     private GameObject playerRef;
-    private bool wasMovementEnabled = true;
-
-    private bool wasKinematic;
+    private RigidbodyConstraints originalConstraints;
 
     void Start()
     {
         if (qtePanel != null) qtePanel.SetActive(false);
     }
 
-    public void Interact(GameObject player)
+    void OnTriggerEnter(Collider other)
     {
-        if (!isEventActive) StartQTE(player);
+        if (hasPlayed || isEventActive) return;
+
+        if (other.CompareTag("Player") || other.CompareTag("Vehicle"))
+        {
+            StartQTE(other.gameObject);
+        }
     }
 
     void StartQTE(GameObject player)
     {
         isEventActive = true;
         playerRef = player;
-        currentIndex = 0;
-        currentTimer = timeLimit;
+        currentTime = timeLimit;
+        currentStep = 0;
 
-        if (player.GetComponent<PlayerMovement>()) wasMovementEnabled = player.GetComponent<PlayerMovement>().enabled;
-        if (player.GetComponent<PlayerMovement>()) player.GetComponent<PlayerMovement>().enabled = false;
-        if (player.GetComponent<CharacterController>()) player.GetComponent<CharacterController>().enabled = false;
-
-        MotocycleV2 bike = player.GetComponent<MotocycleV2>();
-        /*if (bike != null)
-        {
-            // ตัดการควบคุมปุ่ม
-            bike.isDriving = false;
-
-            // แช่แข็งรถไม่ให้ไหล
-            Rigidbody rb = player.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                wasKinematic = rb.isKinematic; 
-                rb.isKinematic = true;         
-            }
-        }*/
-
-        qtePanel.SetActive(true);
+        FreezePlayer(true);
         GenerateSequence();
-        UpdateKeyVisuals();
+
+        if (qtePanel != null) qtePanel.SetActive(true);
     }
 
     void GenerateSequence()
     {
-        qteSequence.Clear();
-        foreach (GameObject obj in spawnedKeyObjs) Destroy(obj);
-        spawnedKeyObjs.Clear();
+        currentSequence.Clear();
+        KeyCode[] keys = { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D };
+        Sprite[] sprites = { spriteW, spriteA, spriteS, spriteD };
 
-        KeyCode lastKey = KeyCode.None;
+        int lastRandomIndex = -1;
 
         for (int i = 0; i < sequenceLength; i++)
         {
-            KeyCode newKey;
-            do
+            int randomIndex = Random.Range(0, 4);
+            while (randomIndex == lastRandomIndex)
             {
-                newKey = validKeys[Random.Range(0, validKeys.Length)];
-            } while (newKey == lastKey);
-
-            qteSequence.Add(newKey);
-            lastKey = newKey;
-
-            GameObject newKeyObj = Instantiate(keyPrefab, keysContainer);
-
-            TMP_Text tmpText = newKeyObj.GetComponentInChildren<TMP_Text>();
-            if (tmpText != null) tmpText.text = newKey.ToString();
-            else
-            {
-                Text legacyText = newKeyObj.GetComponentInChildren<Text>();
-                if (legacyText != null) legacyText.text = newKey.ToString();
+                randomIndex = Random.Range(0, 4);
             }
+            lastRandomIndex = randomIndex;
 
-            spawnedKeyObjs.Add(newKeyObj);
-        }
-    }
+            currentSequence.Add(keys[randomIndex]);
 
-    void UpdateKeyVisuals()
-    {
-        for (int i = 0; i < spawnedKeyObjs.Count; i++)
-        {
-            GameObject keyObj = spawnedKeyObjs[i];
-            Image bgImage = keyObj.GetComponent<Image>();
-            if (bgImage == null) bgImage = keyObj.GetComponentInChildren<Image>();
-
-            if (bgImage == null) continue;
-
-            if (i == currentIndex)
-            {
-                keyObj.transform.localScale = Vector3.one * activeScale;
-                bgImage.color = activeColor;
-            }
-            else if (i < currentIndex)
-            {
-                keyObj.transform.localScale = Vector3.one * normalScale;
-                bgImage.color = completedColor;
-            }
-            else
-            {
-                keyObj.transform.localScale = Vector3.one * normalScale;
-                bgImage.color = pendingColor;
-            }
+            if (i < sequenceIconSlots.Length) sequenceIconSlots[i].sprite = sprites[randomIndex];
+            if (i < checkmarkIcons.Length) checkmarkIcons[i].SetActive(false);
         }
     }
 
@@ -145,111 +88,72 @@ public class ShrineQTE : MonoBehaviour
     {
         if (!isEventActive) return;
 
-        currentTimer -= Time.deltaTime;
-        if (timeSlider != null) timeSlider.value = currentTimer / timeLimit;
+        currentTime -= Time.deltaTime;
+        if (timerSlider != null) timerSlider.value = currentTime / timeLimit;
 
-        if (currentTimer <= 0)
+        if (currentTime <= 0)
         {
-            FailQTE();
+            LoseQTE();
             return;
         }
 
-        CheckInput();
-    }
-
-    void CheckInput()
-    {
         if (Input.anyKeyDown)
         {
-            KeyCode correctKey = qteSequence[currentIndex];
-            GameObject currentObj = spawnedKeyObjs[currentIndex];
-
-            if (Input.GetKeyDown(correctKey))
+            if (Input.GetKeyDown(currentSequence[currentStep]))
             {
-                currentIndex++;
-                if (currentIndex >= qteSequence.Count) WinQTE();
-                else UpdateKeyVisuals();
-            }
-            else if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.A) ||
-                     Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.D))
-            {
-                Transform textTransform = null;
-                if (currentObj.GetComponentInChildren<TMP_Text>())
-                    textTransform = currentObj.GetComponentInChildren<TMP_Text>().transform;
-                else if (currentObj.GetComponentInChildren<Text>())
-                    textTransform = currentObj.GetComponentInChildren<Text>().transform;
+                if (currentStep < checkmarkIcons.Length) checkmarkIcons[currentStep].SetActive(true);
+                currentStep++;
 
-                if (textTransform != null) StartCoroutine(ShakeUI(textTransform));
+                if (currentStep >= sequenceLength) WinQTE();
             }
         }
-    }
-    IEnumerator ShakeUI(Transform target)
-    {
-        Vector3 originalPos = target.localPosition;
-        float elapsed = 0f;
-
-        while (elapsed < shakeDuration)
-        {
-            float x = Random.Range(-1f, 1f) * shakeIntensity;
-            float y = Random.Range(-1f, 1f) * shakeIntensity;
-            target.localPosition = originalPos + new Vector3(x, y, 0);
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        target.localPosition = originalPos;
     }
 
     void WinQTE()
     {
-        Debug.Log("QTE Success Got x1.5 Point");
-        if (spawnedKeyObjs.Count > 0)
-        {
-            GameObject lastKey = spawnedKeyObjs[spawnedKeyObjs.Count - 1];
-            lastKey.transform.localScale = Vector3.one * normalScale;
-            Image img = lastKey.GetComponent<Image>();
-            if (img == null) img = lastKey.GetComponentInChildren<Image>();
-            if (img != null) img.color = completedColor;
-        }
-        StartCoroutine(CloseAfterDelay(0.5f));
-    }
-
-    void FailQTE()
-    {
-        Debug.Log("QTE Failed");
+        Debug.Log("QTE Success! ได้บัฟคูณคะแนนแล้ว!");
         EndQTE();
     }
 
-    IEnumerator CloseAfterDelay(float delay)
+    void LoseQTE()
     {
-        yield return new WaitForSeconds(delay);
+        Debug.Log("QTE Failed! อดได้บัฟ");
         EndQTE();
     }
 
     void EndQTE()
     {
         isEventActive = false;
-        qtePanel.SetActive(false);
-        foreach (GameObject obj in spawnedKeyObjs) Destroy(obj);
-        spawnedKeyObjs.Clear();
+        hasPlayed = true;
 
-        if (playerRef != null)
+        if (qtePanel != null) qtePanel.SetActive(false);
+        FreezePlayer(false);
+    }
+
+    void FreezePlayer(bool freeze)
+    {
+        if (playerRef == null) return;
+
+        MotocycleV2 bike = playerRef.GetComponent<MotocycleV2>();
+        if (bike != null) bike.enabled = !freeze;
+
+        PlayerMovement person = playerRef.GetComponent<PlayerMovement>();
+        if (person != null) person.enabled = !freeze;
+
+        Rigidbody rb = playerRef.GetComponent<Rigidbody>();
+        if (rb != null)
         {
-            if (playerRef.GetComponent<PlayerMovement>())
-                playerRef.GetComponent<PlayerMovement>().enabled = wasMovementEnabled;
-            if (playerRef.GetComponent<CharacterController>())
-                playerRef.GetComponent<CharacterController>().enabled = wasMovementEnabled;
-
-            MotocycleV2 bike = playerRef.GetComponent<MotocycleV2>();
-            /*if (bike != null)
+            if (freeze)
             {
-                Rigidbody rb = playerRef.GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    rb.isKinematic = wasKinematic;
-                }
-                bike.isDriving = true;
-            }*/
+                originalConstraints = rb.constraints;
+                rb.constraints = RigidbodyConstraints.FreezeAll;
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+            }
+            else
+            {
+                rb.constraints = originalConstraints;
+            }
         }
     }
 }

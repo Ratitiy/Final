@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -9,13 +11,17 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("Level Loading")]
     public LevelLoader levelLoader;
-    public int gameSceneIndex = 1;    
+    public int gameSceneIndex = 1;
 
     void Start()
     {
         Time.timeScale = 1f;
 
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         if (MainPanel != null) MainPanel.SetActive(true);
+        if (CreditsPanel != null) CreditsPanel.SetActive(false);
     }
 
     public void PlayGame()
@@ -27,17 +33,23 @@ public class MainMenuManager : MonoBehaviour
     public void OpenCredits()
     {
         if (CreditsPanel != null) CreditsPanel.SetActive(true);
-        if (MainPanel != null) MainPanel.SetActive(false);
     }
 
     public void CloseCredits()
     {
         if (CreditsPanel != null) CreditsPanel.SetActive(false);
-        if (MainPanel != null) MainPanel.SetActive(true);
+
+        StartCoroutine(ClearButtonSelection());
     }
 
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    private IEnumerator ClearButtonSelection()
+    {
+        yield return null; 
+        EventSystem.current.SetSelectedGameObject(null); 
     }
 }
