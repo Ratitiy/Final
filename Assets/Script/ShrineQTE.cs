@@ -22,6 +22,11 @@ public class ShrineQTE : MonoBehaviour
     public Sprite spriteS;
     public Sprite spriteD;
 
+    [Header("Shrine Offerings & Animation")]
+    public GameObject[] offeringItems;
+    public Animator shrineAnimator;
+    public int stepsToStartAnim = 2;
+
     private float currentTime;
     private bool isEventActive = false;
     private bool hasPlayed = false;
@@ -56,8 +61,21 @@ public class ShrineQTE : MonoBehaviour
 
         FreezePlayer(true);
         GenerateSequence();
+        ResetOfferingsAndAnimation();
 
         if (qtePanel != null) qtePanel.SetActive(true);
+    }
+
+    void ResetOfferingsAndAnimation()
+    {
+        for (int i = 0; i < offeringItems.Length; i++)
+        {
+            if (offeringItems[i] != null) offeringItems[i].SetActive(false);
+        }
+        if (shrineAnimator != null)
+        {
+            shrineAnimator.speed = 0f;
+        }
     }
 
     void GenerateSequence()
@@ -102,7 +120,17 @@ public class ShrineQTE : MonoBehaviour
             if (Input.GetKeyDown(currentSequence[currentStep]))
             {
                 if (currentStep < checkmarkIcons.Length) checkmarkIcons[currentStep].SetActive(true);
+                if (currentStep < offeringItems.Length && offeringItems[currentStep] != null)
+                {
+                    offeringItems[currentStep].SetActive(true);
+                }
+
                 currentStep++;
+
+                if (currentStep == stepsToStartAnim && shrineAnimator != null)
+                {
+                    shrineAnimator.speed = 1f;
+                }
 
                 if (currentStep >= sequenceLength) WinQTE();
             }
@@ -111,13 +139,13 @@ public class ShrineQTE : MonoBehaviour
 
     void WinQTE()
     {
-        Debug.Log("QTE Success! ได้บัฟคูณคะแนนแล้ว!");
+        Debug.Log("QTE Success!");
         EndQTE();
     }
 
     void LoseQTE()
     {
-        Debug.Log("QTE Failed! อดได้บัฟ");
+        Debug.Log("QTE Failed!");
         EndQTE();
     }
 
