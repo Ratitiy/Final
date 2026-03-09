@@ -16426,11 +16426,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 420021031773134304, guid: 7196b3be6f33a4a4784bcccf9ba06522, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2791675123183050886, guid: 7196b3be6f33a4a4784bcccf9ba06522, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3210990620139476765, guid: 7196b3be6f33a4a4784bcccf9ba06522, type: 3}
       propertyPath: m_Pivot.x

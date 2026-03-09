@@ -83,6 +83,8 @@ public class MotorcycleSeat : MonoBehaviour
             anim.SetFloat("Speed", 0f);   
             anim.SetBool("IsRiding", true);
         }
+        if (bikeCamera != null) bikeCamera.SetActive(true);
+        if (playerCamera != null) playerCamera.SetActive(false);
     }
 
     IEnumerator EnableDismountCooldown()
@@ -148,5 +150,8 @@ public class MotorcycleSeat : MonoBehaviour
 
         currentPlayer = null;
         canDismount = false;
+
+        if (bikeCamera != null) bikeCamera.SetActive(false);
+        if (playerCamera != null) playerCamera.SetActive(true);
     }
 }
