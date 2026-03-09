@@ -127,12 +127,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dde196773fe6b0f488946683d4e32f7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spillThreshold: 10
-  qualityDrainRate: 15
+  qualityDrainRate: 5
   spillParticle: {fileID: 8332318863441295377, guid: 99616558cfb8f29449e42c1817fc33a7, type: 3}
-  moveSensitivity: 20
-  turnSensitivity: 10
+  turnThreshold: 0.5
+  speedThreshold: 0.1
   ramenQuality: 100
+  isOnVehicle: 0
 --- !u!1 &2681782326297041011
 GameObject:
   m_ObjectHideFlags: 0

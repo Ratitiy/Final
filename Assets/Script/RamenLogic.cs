@@ -3,63 +3,58 @@
 public class RamenLogic : MonoBehaviour
 {
     [Header("Spill Settings")]
-    public float spillThreshold = 0.15f;    
     public float qualityDrainRate = 15f;
+    public float impactDamage = 10f; // ค่าความเสียหายเมื่อชน
     public ParticleSystem spillParticle;
-
-    [Header("Sensitivity")]
-    public float moveSensitivity = 30f;     
-    public float turnSensitivity = 20f;     
 
     [Header("Status")]
     public float ramenQuality = 100f;
+    public bool isOnVehicle = false;
 
-    private Vector3 lastPos;
-    private Quaternion lastRot;
-
-    void Start()
+    void Update()
     {
-        lastPos = transform.position;
-        lastRot = transform.rotation;
-    }
-
-    void LateUpdate()
-    {
-        
-        float distance = Vector3.Distance(transform.position, lastPos);
-        float moveForce = distance * moveSensitivity;
-
-      
-        float angle = Quaternion.Angle(transform.rotation, lastRot);
-        float turnForce = angle * (turnSensitivity * 0.01f);
-
-        float totalForce = moveForce + turnForce;
-
-        if (totalForce > 0.0001f)
+        if (!isOnVehicle)
         {
-            string color = totalForce > spillThreshold ? "red" : "yellow";
-            Debug.Log($"<color={color}>RAMEN FORCE: {totalForce:F4}</color>");
+            StopSpill();
+            return;
         }
 
-        if (totalForce > spillThreshold)
-        {
-            Spill();
-        }
+        // ระบบเลี้ยวแล้วลด (Input Based)
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
 
-        lastPos = transform.position;
-        lastRot = transform.rotation;
+        if (Mathf.Abs(h) > 0.2f && Mathf.Abs(v) > 0.1f)
+        {
+            StartSpill();
+        }
+        else
+        {
+            StopSpill();
+        }
     }
 
-    void Spill()
+    // ระบบชนธรรมดาแล้วลดคุณภาพ
+    private void OnTriggerEnter(Collider other)
+    {
+        if (isOnVehicle && other.CompareTag("Obstacle"))
+        {
+            ramenQuality -= impactDamage;
+            ramenQuality = Mathf.Max(ramenQuality, 0);
+            Debug.Log("ชนวัตถุ! คุณภาพลดเหลือ: " + ramenQuality);
+
+            if (spillParticle != null) spillParticle.Play();
+        }
+    }
+
+    void StartSpill()
     {
         if (ramenQuality <= 0) return;
-
-        if (spillParticle != null && !spillParticle.isPlaying)
-        {
-            spillParticle.Play();
-        }
-
+        if (spillParticle != null && !spillParticle.isPlaying) spillParticle.Play();
         ramenQuality -= qualityDrainRate * Time.deltaTime;
-        ramenQuality = Mathf.Max(ramenQuality, 0);
+    }
+
+    void StopSpill()
+    {
+        if (spillParticle != null && spillParticle.isPlaying) spillParticle.Stop();
     }
 }

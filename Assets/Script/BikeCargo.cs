@@ -10,20 +10,19 @@ public class BikeCargo : MonoBehaviour
         PlayerCarry carry = player.GetComponent<PlayerCarry>();
         if (carry == null) return;
 
-        
         if (storedItem != null && !carry.IsCarrying())
         {
+            RamenLogic ramen = storedItem.GetComponent<RamenLogic>();
+            if (ramen != null) ramen.isOnVehicle = false;
+
             carry.PickUp(storedItem);
             storedItem = null;
-            Debug.Log("หยิบของจากท้ายรถ");
             return;
         }
 
-        
         if (storedItem == null && carry.IsCarrying())
         {
             GameObject item = carry.carriedItem;
-
             carry.carriedItem = null;
             storedItem = item;
 
@@ -31,18 +30,23 @@ public class BikeCargo : MonoBehaviour
             item.transform.localPosition = Vector3.zero;
             item.transform.localRotation = Quaternion.identity;
 
+            // ตั้งค่าฟิสิกส์ให้ยังคงตรวจจับการชนได้ (Trigger)
             Rigidbody rb = item.GetComponent<Rigidbody>();
             if (rb)
             {
                 rb.isKinematic = true;
-                rb.detectCollisions = false;
+                rb.detectCollisions = true;
             }
 
             Collider col = item.GetComponent<Collider>();
             if (col)
-                col.enabled = false;
+            {
+                col.enabled = true;
+                col.isTrigger = true;
+            }
 
-            Debug.Log("วางของไว้ท้ายรถ");
+            RamenLogic ramen = item.GetComponent<RamenLogic>();
+            if (ramen != null) ramen.isOnVehicle = true;
         }
     }
 }

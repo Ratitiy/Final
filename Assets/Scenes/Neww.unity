@@ -21243,7 +21243,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.68, y: 1, z: 6.65}
+  m_Size: {x: 0.68, y: 1, z: 8.8}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3140036159318829007
 GameObject:
@@ -30109,7 +30109,7 @@ MonoBehaviour:
   - {fileID: 724287399}
   - {fileID: 865527603}
   spawnInterval: 2
-  obstacleLifeTime: 10
+  obstacleLifeTime: 30
   checkRadius: 2
 --- !u!4 &8372098542358095846
 Transform:
