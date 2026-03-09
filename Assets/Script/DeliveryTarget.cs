@@ -14,16 +14,27 @@ public class DeliveryTarget : MonoBehaviour
         }
 
         PlayerCarry carry = player.GetComponent<PlayerCarry>();
-
-        if (carry == null || !carry.IsCarrying())
+        if (carry != null && carry.carriedItem != null)
         {
-            Debug.Log("ไม่มีของ!");
-            return;
+            
+            RamenLogic ramen = carry.carriedItem.GetComponent<RamenLogic>();
+            float qualityMultiplier = 1f;
+
+            if (ramen != null)
+            {
+                
+                qualityMultiplier = ramen.ramenQuality / 100f;
+                Debug.Log("คุณภาพราเมงตอนส่ง: " + ramen.ramenQuality + "%");
+            }
+
+            int finalReward = Mathf.RoundToInt(DeliveryManager.Instance.rewardMoney * qualityMultiplier);
+
+            
+            MoneyManager.Instance.AddMoney(finalReward);
+
+            carry.Drop();
+            DeliveryManager.Instance.CompleteDelivery();
         }
-
-        carry.Drop();
-        DeliveryManager.Instance.CompleteDelivery();
-
-        Debug.Log("ส่งของสำเร็จ!");
     }
+
 }

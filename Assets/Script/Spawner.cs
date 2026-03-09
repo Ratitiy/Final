@@ -1,41 +1,66 @@
 ﻿using UnityEngine;
 
-public class Spawner : MonoBehaviour
+public class ObstacleSpawner : MonoBehaviour
 {
-    [Header("Spawner Settings")]
-    public GameObject[] obstaclePrefabs; 
-    public Transform[] spawnPoints;      
-
-    public float spawnInterval = 3f;     
-    public bool isSpawning = true;
+    public GameObject[] obstaclePrefabs;
+    public Transform[] spawnPoints;
+    public float spawnInterval = 3f;
+    public float obstacleLifeTime = 5f;
+    public float checkRadius = 2f; 
 
     private float timer;
 
     void Update()
     {
-        if (!isSpawning) return;
-
         timer += Time.deltaTime;
-
         if (timer >= spawnInterval)
         {
-            SpawnObstacle();
+            TrySpawn();
             timer = 0;
         }
     }
 
-    void SpawnObstacle()
+    void TrySpawn()
     {
         if (obstaclePrefabs.Length == 0 || spawnPoints.Length == 0) return;
 
-        
-        int randomPoint = Random.Range(0, spawnPoints.Length);
-        Transform sp = spawnPoints[randomPoint];
+       
+        int randomIndex = Random.Range(0, spawnPoints.Length);
+        Transform targetPoint = spawnPoints[randomIndex];
 
        
+        Collider[] colliders = Physics.OverlapSphere(targetPoint.position, checkRadius);
+
+        bool isOccupied = false;
+        foreach (var col in colliders)
+        {
+            
+            if (col.CompareTag("Obstacle"))
+            {
+                isOccupied = true;
+                break;
+            }
+        }
+
+        if (!isOccupied)
+        {
+            SpawnObstacle(targetPoint);
+        }
+        else
+        {
+           
+            Debug.Log("จุดเกิดไม่ว่าง ข้ามการสร้างรอบนี้");
+        }
+    }
+
+    void SpawnObstacle(Transform sp)
+    {
         int randomPrefab = Random.Range(0, obstaclePrefabs.Length);
+        GameObject newObstacle = Instantiate(obstaclePrefabs[randomPrefab], sp.position, sp.rotation);
 
-       
-        Instantiate(obstaclePrefabs[randomPrefab], sp.position, sp.rotation);
+        
+        newObstacle.tag = "Obstacle";
+
+        Destroy(newObstacle, obstacleLifeTime);
     }
 }
