@@ -7,7 +7,6 @@ public class DestorySelf : MonoBehaviour
 
     void Start()
     {
-       
         Destroy(gameObject, lifeTime);
     }
 }
