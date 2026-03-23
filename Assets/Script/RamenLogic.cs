@@ -4,7 +4,7 @@ public class RamenLogic : MonoBehaviour
 {
     [Header("Spill Settings")]
     public float qualityDrainRate = 15f;
-    public float impactDamage = 10f; // ค่าความเสียหายเมื่อชน
+    public float impactDamage = 10f;
     public ParticleSystem spillParticle;
 
     [Header("Status")]
@@ -19,7 +19,7 @@ public class RamenLogic : MonoBehaviour
             return;
         }
 
-        // ระบบเลี้ยวแล้วลด (Input Based)
+        
         float h = Input.GetAxis("Horizontal");
         float v = Input.GetAxis("Vertical");
 
@@ -33,7 +33,7 @@ public class RamenLogic : MonoBehaviour
         }
     }
 
-    // ระบบชนธรรมดาแล้วลดคุณภาพ
+   
     private void OnTriggerEnter(Collider other)
     {
         if (isOnVehicle && other.CompareTag("Obstacle"))
