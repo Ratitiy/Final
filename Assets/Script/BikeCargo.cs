@@ -30,7 +30,7 @@ public class BikeCargo : MonoBehaviour
             item.transform.localPosition = Vector3.zero;
             item.transform.localRotation = Quaternion.identity;
 
-            // ตั้งค่าฟิสิกส์ให้ยังคงตรวจจับการชนได้ (Trigger)
+            
             Rigidbody rb = item.GetComponent<Rigidbody>();
             if (rb)
             {
