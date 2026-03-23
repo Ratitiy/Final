@@ -16,6 +16,14 @@ public class MotocycleV2 : MonoBehaviour
     [Header("UI Settings")]
     public TextMeshProUGUI speedText;
 
+    [Header("Debuff Settings")]
+    public bool isControlsInverted = false;
+    public float slipDelay = 0.3f;
+
+    [Header("Debuff UI")]
+    public GameObject debuffPanel;
+    public TextMeshProUGUI debuffTimerText;
+
     [Header("Settings")]
     public float motorTorque = 1500f;
     public float breakTorque = 3000f;
@@ -41,12 +49,20 @@ public class MotocycleV2 : MonoBehaviour
 
     void Update()
     {
-        moveInput = Input.GetAxis("Vertical");
-        steerInput = Input.GetAxis("Horizontal");
+        float rawVertical = Input.GetAxis("Vertical");     
+        float rawHorizontal = Input.GetAxis("Horizontal"); 
+        if (isControlsInverted)
+        {
+            moveInput = -rawHorizontal;
+            steerInput = rawVertical; 
+        }
+        else
+        {
+            moveInput = rawVertical;
+            steerInput = rawHorizontal;
+        }
 
-        // แสดงผลความเร็วบน UI
         DisplaySpeed();
-
         if (Input.GetKey(KeyCode.Space))
             ApplyBrakes(breakTorque);
         else
@@ -73,11 +89,7 @@ public class MotocycleV2 : MonoBehaviour
     void HandleMotor()
     {
         float currentSpeedKmh = rb.linearVelocity.magnitude * 3.6f;
-
-        // ใส่แรงเครื่องปกติ
         backWheel.motorTorque = moveInput * motorTorque;
-
-        // จำกัดความเร็วจริง ๆ
         if (currentSpeedKmh > maxSpeedKmh)
         {
             rb.linearVelocity = rb.linearVelocity.normalized * (maxSpeedKmh / 3.6f);
@@ -173,5 +185,31 @@ public class MotocycleV2 : MonoBehaviour
         wheelCollider.GetWorldPose(out pos, out rot);
         wheelTransform.position = pos;
         wheelTransform.rotation = rot;
+    }
+
+    public void TriggerSlipEffect(float duration)
+    {
+        StartCoroutine(SlipRoutine(duration));
+    }
+
+    private System.Collections.IEnumerator SlipRoutine(float duration)
+    {
+        yield return new WaitForSeconds(slipDelay);
+        isControlsInverted = true;
+
+        if (debuffPanel != null) debuffPanel.SetActive(true);
+        float timeLeft = duration;
+        while (timeLeft > 0)
+        {
+            timeLeft -= Time.deltaTime;
+            if (debuffTimerText != null)
+            {
+                debuffTimerText.text = timeLeft.ToString("F1") + " s";
+            }
+
+            yield return null;
+        }
+        isControlsInverted = false;
+        if (debuffPanel != null) debuffPanel.SetActive(false);
     }
 }
