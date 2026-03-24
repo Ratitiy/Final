@@ -1,37 +1,51 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class Spawner : MonoBehaviour
 {
-    public GameObject prefabToSpawn; 
-    public Transform targetPoint;   
-    public float spawnInterval = 2f;
+    [Header("Settings")]
+    public GameObject prefabToSpawn;
+    public Transform targetPoint;
+    public int ratsPerWave = 3;        
+    public float spawnInterval = 0.3f;   
+    public float waveCooldown = 5f;      
+    public float distanceBetweenRats = 0.8f;
 
-    private float timer;
-
-    void Update()
+    private void Start()
     {
-        timer += Time.deltaTime;
+        
+        StartCoroutine(SpawnRoutine());
+    }
 
-        if (timer >= spawnInterval)
+    IEnumerator SpawnRoutine()
+    {
+        while (true)
         {
-            SpawnObject();
-            timer = 0; 
+            for (int i = 0; i < ratsPerWave; i++)
+            {
+                SpawnRat(i);
+                yield return new WaitForSeconds(spawnInterval);
+            }
+
+           
+            yield return new WaitForSeconds(waveCooldown);
         }
     }
 
-    void SpawnObject()
+    void SpawnRat(int index)
     {
-        if (prefabToSpawn != null && targetPoint != null)
-        {
-            // สร้าง Object ขึ้นมาที่ตำแหน่งของ Spawner
-            GameObject newObj = Instantiate(prefabToSpawn, transform.position, Quaternion.identity);
+        if (prefabToSpawn == null || targetPoint == null) return;
 
-            // ส่งค่าเป้าหมายไปให้ Script การเคลื่อนที่
-            RatMove moveScript = newObj.GetComponent<RatMove>();
-            if (moveScript != null)
-            {
-                moveScript.target = targetPoint;
-            }
+        GameObject newRat = Instantiate(prefabToSpawn, transform.position, Quaternion.identity);
+
+        RatMove moveScript = newRat.GetComponent<RatMove>();
+        if (moveScript != null)
+        {
+            moveScript.target = targetPoint;
+
+            
+            Vector3 directionToTarget = (targetPoint.position - transform.position).normalized;
+            moveScript.offset = -directionToTarget * (index * distanceBetweenRats);
         }
     }
 }
