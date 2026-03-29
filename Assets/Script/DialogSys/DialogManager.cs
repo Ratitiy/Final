@@ -5,33 +5,36 @@ using TMPro;
 
 public class DialogManager : MonoBehaviour
 {
+    // 1. เพิ่มตัวแปรสำหรับลากกล่อง UI มาใส่
     public GameObject dialogUI;
+
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogText;
 
-    // เพิ่มตัวแปรนี้เข้ามาเพื่อบอกว่ากล่องข้อความเปิดอยู่ไหม
     public bool isDialogActive = false;
-
-    private Queue<string> sentences;
+    private Queue<DialogLine> linesQueue;
 
     void Start()
     {
-        sentences = new Queue<string>();
+        linesQueue = new Queue<DialogLine>();
+
+        // 2. สั่งปิด UI ไว้ก่อนเสมอตอนเริ่มเกม
         dialogUI.SetActive(false);
-        isDialogActive = false; // เริ่มเกมมายังไม่ได้คุย
+        isDialogActive = false;
     }
 
     public void StartDialog(Dialog dialog)
     {
-        isDialogActive = true; // เปลี่ยนสถานะเป็นกำลังคุยอยู่
+        isDialogActive = true;
+
+        // 3. สั่งเปิด UI ขึ้นมาเมื่อเริ่มบทสนทนา
         dialogUI.SetActive(true);
 
-        nameText.text = dialog.name;
-        sentences.Clear();
+        linesQueue.Clear();
 
-        foreach (string sentence in dialog.sentences)
+        foreach (DialogLine line in dialog.lines)
         {
-            sentences.Enqueue(sentence);
+            linesQueue.Enqueue(line);
         }
 
         DisplayNextSentence();
@@ -39,15 +42,17 @@ public class DialogManager : MonoBehaviour
 
     public void DisplayNextSentence()
     {
-        if (sentences.Count == 0)
+        if (linesQueue.Count == 0)
         {
             EndDialog();
             return;
         }
 
-        string sentence = sentences.Dequeue();
+        DialogLine currentLine = linesQueue.Dequeue();
+        nameText.text = currentLine.name;
+
         StopAllCoroutines();
-        StartCoroutine(TypeSentence(sentence));
+        StartCoroutine(TypeSentence(currentLine.sentence));
     }
 
     IEnumerator TypeSentence(string sentence)
@@ -60,10 +65,11 @@ public class DialogManager : MonoBehaviour
         }
     }
 
-    // เปลี่ยนจาก private เป็น public เพื่อให้ปุ่ม E เรียกใช้ตอนจบได้
     public void EndDialog()
     {
-        isDialogActive = false; // เปลี่ยนสถานะเป็นคุยจบแล้ว
+        isDialogActive = false;
+
+        // 4. สั่งปิด UI เมื่อคุยจบ
         dialogUI.SetActive(false);
         Debug.Log("จบการสนทนา");
     }
