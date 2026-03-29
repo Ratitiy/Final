@@ -22,7 +22,8 @@ public class MotocycleV2 : MonoBehaviour
 
     [Header("Debuff UI")]
     public GameObject debuffPanel;
-    public TextMeshProUGUI debuffTimerText;
+    public UnityEngine.UI.Image waterSplatterImage; 
+    public UnityEngine.UI.Image timerCircleImage;   
 
     [Header("Settings")]
     public float motorTorque = 1500f;
@@ -196,15 +197,35 @@ public class MotocycleV2 : MonoBehaviour
     {
         yield return new WaitForSeconds(slipDelay);
         isControlsInverted = true;
-
         if (debuffPanel != null) debuffPanel.SetActive(true);
+
+        if (waterSplatterImage != null)
+        {
+            Color c = waterSplatterImage.color;
+            c.a = 1f;
+            waterSplatterImage.color = c;
+        }
+
+        if (timerCircleImage != null)
+        {
+            timerCircleImage.fillAmount = 1f; 
+        }
+
         float timeLeft = duration;
         while (timeLeft > 0)
         {
             timeLeft -= Time.deltaTime;
-            if (debuffTimerText != null)
+            float ratio = timeLeft / duration;
+
+            if (waterSplatterImage != null)
             {
-                debuffTimerText.text = timeLeft.ToString("F1") + " s";
+                Color c = waterSplatterImage.color;
+                c.a = ratio;
+                waterSplatterImage.color = c;
+            }
+            if (timerCircleImage != null)
+            {
+                timerCircleImage.fillAmount = ratio;
             }
 
             yield return null;
