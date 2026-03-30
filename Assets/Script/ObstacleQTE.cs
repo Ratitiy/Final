@@ -6,20 +6,27 @@ public class QuickTimeEventObstacle : MonoBehaviour
     [Header("QTE Settings")]
     public float maxEnergy = 100f;
     public float decaySpeed = 20f;
-    public float powerPerPress = 15f;
+    public float powerPerPress = 10f;
+    public bool canTriggerQTE = true;
+
+    [Header("QTE Rules")]
+    public float qteTimeLimit = 5f;
+    private float currentQteTimer;
+
+    [Header("Cooldown Settings")]
+    public float cooldownTime = 5f;
+    public static bool isGlobalQTEActive = false;
+    public static float globalCooldownEndTime = 0f;
 
     [Header("Visual Settings (Scale)")]
     public Vector3 activeScale = new Vector3(1.3f, 1.3f, 1f);
     public Vector3 inactiveScale = new Vector3(0.8f, 0.8f, 1f);
-
-    [Header("Visual Settings (Color)")]
-    public Color activeColor = Color.white; 
-    public Color inactiveColor = new Color(0.4f, 0.4f, 0.4f, 1f); 
+    public Color activeColor = Color.white;
+    public Color inactiveColor = new Color(0.4f, 0.4f, 0.4f, 1f);
 
     [Header("UI References")]
     public GameObject qtePanel;
     public Slider energySlider;
-
     public Transform qButtonIcon;
     public Transform eButtonIcon;
 
@@ -27,16 +34,20 @@ public class QuickTimeEventObstacle : MonoBehaviour
     private bool isEventActive = false;
     private GameObject playerRef;
     private bool isTurnQ = true;
-
     private bool wasKinematic;
 
     void Start()
     {
-        if (qtePanel != null) qtePanel.SetActive(false);
+        if (!isGlobalQTEActive && qtePanel != null && qtePanel.activeSelf)
+        {
+            qtePanel.SetActive(false);
+        }
     }
 
     void OnCollisionEnter(Collision collision)
     {
+        if (!canTriggerQTE || isGlobalQTEActive || Time.time < globalCooldownEndTime) return;
+
         if ((collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Vehicle")) && !isEventActive)
         {
             StartQTE(collision.gameObject);
@@ -46,9 +57,17 @@ public class QuickTimeEventObstacle : MonoBehaviour
     void StartQTE(GameObject player)
     {
         isEventActive = true;
+        isGlobalQTEActive = true;
         playerRef = player;
         currentEnergy = 0;
+        currentQteTimer = qteTimeLimit;
         isTurnQ = true;
+
+        RatMove moveScript = GetComponent<RatMove>();
+        if (moveScript != null) moveScript.enabled = false;
+
+        Rigidbody myRb = GetComponent<Rigidbody>();
+        if (myRb != null) myRb.isKinematic = true;
 
         if (player.GetComponent<PlayerMovement>()) player.GetComponent<PlayerMovement>().enabled = false;
         if (player.GetComponent<CharacterController>()) player.GetComponent<CharacterController>().enabled = false;
@@ -72,6 +91,13 @@ public class QuickTimeEventObstacle : MonoBehaviour
     {
         if (!isEventActive) return;
 
+        currentQteTimer -= Time.deltaTime;
+        if (currentQteTimer <= 0)
+        {
+            EndQTE(false);
+            return;
+        }
+
         if (isTurnQ)
         {
             if (Input.GetKeyDown(KeyCode.Q))
@@ -90,6 +116,7 @@ public class QuickTimeEventObstacle : MonoBehaviour
                 UpdateButtonVisuals();
             }
         }
+
         currentEnergy -= decaySpeed * Time.deltaTime;
         currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
 
@@ -97,47 +124,16 @@ public class QuickTimeEventObstacle : MonoBehaviour
 
         if (currentEnergy >= maxEnergy)
         {
-            WinQTE();
+            EndQTE(true);
         }
     }
 
-    void UpdateButtonVisuals()
+    void EndQTE(bool isWin)
     {
-        if (qButtonIcon == null || eButtonIcon == null) return;
-
-        Image qImage = qButtonIcon.GetComponent<Image>();
-        Image eImage = eButtonIcon.GetComponent<Image>();
-
-        if (isTurnQ)
-        {
-            qButtonIcon.localScale = activeScale;
-            eButtonIcon.localScale = inactiveScale;
-
-            if (qImage != null) qImage.color = activeColor;
-            if (eImage != null) eImage.color = inactiveColor;
-        }
-        else
-        {
-            eButtonIcon.localScale = activeScale;
-            qButtonIcon.localScale = inactiveScale;
-
-            if (eImage != null) eImage.color = activeColor;
-            if (qImage != null) qImage.color = inactiveColor;
-        }
-    }
-
-    void UpdateUI()
-    {
-        float ratio = currentEnergy / maxEnergy;
-        if (energySlider != null)
-        {
-            energySlider.value = ratio;
-        }
-    }
-    void WinQTE()
-    {
-        Debug.Log("Success");
         isEventActive = false;
+        isGlobalQTEActive = false;
+        globalCooldownEndTime = Time.time + cooldownTime;
+
         if (qtePanel != null) qtePanel.SetActive(false);
 
         if (playerRef != null)
@@ -153,6 +149,63 @@ public class QuickTimeEventObstacle : MonoBehaviour
                 bike.enabled = true;
             }
         }
-        Destroy(gameObject);
+
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
+        RatMove moveScript = GetComponent<RatMove>();
+        if (moveScript != null) moveScript.enabled = true;
+
+        Rigidbody myRb = GetComponent<Rigidbody>();
+        if (myRb != null) myRb.isKinematic = false;
+    }
+
+    void OnDestroy()
+    {
+        if (isEventActive)
+        {
+            isGlobalQTEActive = false;
+            if (qtePanel != null) qtePanel.SetActive(false);
+
+            if (playerRef != null)
+            {
+                if (playerRef.GetComponent<PlayerMovement>()) playerRef.GetComponent<PlayerMovement>().enabled = true;
+                if (playerRef.GetComponent<CharacterController>()) playerRef.GetComponent<CharacterController>().enabled = true;
+                MotocycleV2 bike = playerRef.GetComponent<MotocycleV2>();
+                if (bike != null)
+                {
+                    Rigidbody rb = playerRef.GetComponent<Rigidbody>();
+                    if (rb != null) rb.isKinematic = wasKinematic;
+                    bike.enabled = true;
+                }
+            }
+        }
+    }
+
+    void UpdateButtonVisuals()
+    {
+        if (qButtonIcon == null || eButtonIcon == null) return;
+        Image qImage = qButtonIcon.GetComponent<Image>();
+        Image eImage = eButtonIcon.GetComponent<Image>();
+        if (isTurnQ)
+        {
+            qButtonIcon.localScale = activeScale;
+            eButtonIcon.localScale = inactiveScale;
+            if (qImage != null) qImage.color = activeColor;
+            if (eImage != null) eImage.color = inactiveColor;
+        }
+        else
+        {
+            eButtonIcon.localScale = activeScale;
+            qButtonIcon.localScale = inactiveScale;
+            if (eImage != null) eImage.color = activeColor;
+            if (qImage != null) qImage.color = inactiveColor;
+        }
+    }
+
+    void UpdateUI()
+    {
+        float ratio = currentEnergy / maxEnergy;
+        if (energySlider != null) energySlider.value = ratio;
     }
 }
