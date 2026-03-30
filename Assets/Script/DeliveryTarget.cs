@@ -13,6 +13,7 @@ public class DeliveryTarget : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
+<<<<<<< Updated upstream
             DialogManager manager = FindObjectOfType<DialogManager>();
             if (manager != null)
             {
@@ -117,4 +118,39 @@ public class DeliveryTarget : MonoBehaviour
             FindObjectOfType<DialogManager>()?.EndDialog();
         }
     }
+=======
+            Debug.Log("ไม่ใช่จุดส่งของนี้!");
+            return;
+        }
+
+        PlayerCarry carry = player.GetComponent<PlayerCarry>();
+        Animator anim = player.GetComponent<Animator>(); 
+
+        if (carry != null && carry.carriedItem != null)
+        {
+            RamenLogic ramen = carry.carriedItem.GetComponent<RamenLogic>();
+            float qualityMultiplier = 1f;
+
+            if (ramen != null)
+            {
+                qualityMultiplier = ramen.ramenQuality / 100f;
+                Debug.Log("คุณภาพราเมงตอนส่ง: " + ramen.ramenQuality + "%");
+            }
+
+            int finalReward = Mathf.RoundToInt(DeliveryManager.Instance.rewardMoney * qualityMultiplier);
+            MoneyManager.Instance.AddMoney(finalReward);
+
+            
+            carry.Drop();
+
+            if (anim != null)
+            {
+                anim.SetBool("isCarrying", false);
+                anim.SetBool("IsRiding", false);   
+            }
+
+            DeliveryManager.Instance.CompleteDelivery();
+        }
+    }
+>>>>>>> Stashed changes
 }

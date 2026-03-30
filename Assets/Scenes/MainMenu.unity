@@ -1433,7 +1433,7 @@ MonoBehaviour:
   MainPanel: {fileID: 640079744}
   CreditsPanel: {fileID: 438238289}
   levelLoader: {fileID: 1179178490}
-  gameSceneIndex: 0
+  gameSceneIndex: 4
 --- !u!4 &1179178489
 Transform:
   m_ObjectHideFlags: 0
