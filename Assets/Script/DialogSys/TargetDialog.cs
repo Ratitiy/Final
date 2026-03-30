@@ -15,7 +15,7 @@ public class TargetDialog : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            DialogManager manager = FindObjectOfType<DialogManager>();
+            DialogManager manager = FindAnyObjectByType<DialogManager>();
             if (manager != null)
             {
                 if (manager.isDialogActive == false) // ถ้ากล่องข้อความปิดอยู่
@@ -66,7 +66,7 @@ public class TargetDialog : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            FindObjectOfType<DialogManager>()?.EndDialog();
+            FindAnyObjectByType<DialogManager>()?.EndDialog();
         }
     }
 }

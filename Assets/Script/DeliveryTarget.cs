@@ -13,8 +13,7 @@ public class DeliveryTarget : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-<<<<<<< Updated upstream
-            DialogManager manager = FindObjectOfType<DialogManager>();
+            DialogManager manager = FindFirstObjectByType<DialogManager>();
             if (manager != null)
             {
                 if (manager.isDialogActive == false)
@@ -24,51 +23,40 @@ public class DeliveryTarget : MonoBehaviour
                     // 1. เช็คว่ามีเควสอยู่ไหม?
                     if (DeliveryManager.Instance.hasActiveDelivery)
                     {
-                        Debug.Log("ผ่านด่าน 1: มีเควสส่งของอยู่");
-
                         // 2. เช็คว่ามาส่งถูกที่ไหม?
                         if (DeliveryManager.Instance.currentTarget == transform)
                         {
-                            Debug.Log("ผ่านด่าน 2: มาส่งถูกที่เป๊ะ (เป้าหมายคือตัวนี้แหละ)");
-
-                            // ดึงสคริปต์ PlayerCarry มาเช็คการถือของ (ลองหาจากตัวลูกเผื่อไว้ด้วย)
+                            // ดึงสคริปต์ PlayerCarry มาเช็คการถือของ
                             PlayerCarry carry = playerObj.GetComponent<PlayerCarry>();
                             if (carry == null) carry = playerObj.GetComponentInParent<PlayerCarry>();
 
-                            // 3. เช็คว่าเจอระบบถือของบนตัวหมาป่าไหม?
-                            if (carry != null)
+                            // 3. เช็คว่าเจอระบบถือของ และถือของอยู่จริงไหม?
+                            if (carry != null && carry.carriedItem != null)
                             {
-                                Debug.Log("ผ่านด่าน 3: เจอสคริปต์ PlayerCarry บนตัวละคร");
+                                Debug.Log("ผ่านเงื่อนไข: กำลังส่งราเมง...");
 
-                                // 4. เช็คว่า "ถือของอยู่" จริงๆ ใช่ไหม?
-                                if (carry.carriedItem != null)
-                                {
-                                    Debug.Log("ผ่านด่าน 4: ถือของอยู่จริงๆ! -> เข้าสู่กระบวนการส่งของสำเร็จ");
+                                // เล่นบทสนทนาสำเร็จ
+                                Dialog dialogToPlay = successDialogs.Length > 0 ? successDialogs[Random.Range(0, successDialogs.Length)] : null;
+                                if (dialogToPlay != null) manager.StartDialog(dialogToPlay);
 
-                                    Dialog dialogToPlay = successDialogs.Length > 0 ? successDialogs[Random.Range(0, successDialogs.Length)] : null;
-                                    if (dialogToPlay != null) manager.StartDialog(dialogToPlay);
-
-                                    CompleteDeliveryLogic(carry);
-                                }
-                                else
-                                {
-                                    Debug.LogError("พังที่ด่าน 4: ในเกมเห็นว่ามีของบนหัว แต่ในโค้ดตัวแปร carry.carriedItem มันแจ้งว่า 'ว่างเปล่า' (ตอนสคริปต์ PlayerCarry หยิบของ อาจจะลืมตั้งค่าตัวแปรนี้ครับ!)");
-                                }
+                                // เข้าสู่ฟังก์ชันคำนวณเงินและจบงาน
+                                CompleteDeliveryLogic(carry);
                             }
                             else
                             {
-                                Debug.LogError("พังที่ด่าน 3: หาสคริปต์ PlayerCarry บนตัวละครหมาป่าไม่เจอ! (ลองเช็คว่าสคริปต์นี้แปะอยู่ตรงไหน)");
+                                Debug.LogError("พังที่ด่าน 3-4: ไม่เจอ PlayerCarry หรือไม่ได้ถือของอยู่!");
+                                PlayFinishDialog(manager);
                             }
                         }
                         else
                         {
-                            Debug.LogError("พังที่ด่าน 2: ผิดคน! ระบบบอกให้ไปส่งที่: " + DeliveryManager.Instance.currentTarget.name + " แต่ตัวที่คุณคุยอยู่คือ: " + transform.name);
+                            Debug.Log("พังที่ด่าน 2: ผิดคน! ต้องไปส่งที่: " + DeliveryManager.Instance.currentTarget.name);
                             PlayFinishDialog(manager);
                         }
                     }
                     else
                     {
-                        Debug.LogError("พังที่ด่าน 1: ไม่มีเควสให้ส่ง! (แปลว่าลืมคุยกับแพนด้า หรือเควสหายไปแล้ว)");
+                        Debug.Log("พังที่ด่าน 1: ไม่มีเควสให้ส่ง!");
                         PlayFinishDialog(manager);
                     }
                 }
@@ -88,15 +76,31 @@ public class DeliveryTarget : MonoBehaviour
 
     void CompleteDeliveryLogic(PlayerCarry carry)
     {
-        // ... (โค้ดคำนวณเงินและคุณภาพราเมงเดิมของคุณ) ...
+        // คำนวณคุณภาพและเงินรางวัล
         RamenLogic ramen = carry.carriedItem.GetComponent<RamenLogic>();
         float qualityMultiplier = 1f;
-        if (ramen != null) { qualityMultiplier = ramen.ramenQuality / 100f; }
+
+        if (ramen != null)
+        {
+            qualityMultiplier = ramen.ramenQuality / 100f;
+            Debug.Log("คุณภาพราเมงตอนส่ง: " + ramen.ramenQuality + "%");
+        }
 
         int finalReward = Mathf.RoundToInt(DeliveryManager.Instance.rewardMoney * qualityMultiplier);
         MoneyManager.Instance.AddMoney(finalReward);
 
+        // วางของทิ้ง
         carry.Drop();
+
+        // เคลียร์ค่า Animator (จากโค้ดฝั่ง Stashed)
+        Animator anim = playerObj.GetComponent<Animator>();
+        if (anim != null)
+        {
+            anim.SetBool("isCarrying", false);
+            anim.SetBool("IsRiding", false);
+        }
+
+        // จบเควสในระบบ Manager
         DeliveryManager.Instance.CompleteDelivery();
     }
 
@@ -115,42 +119,7 @@ public class DeliveryTarget : MonoBehaviour
         {
             playerInRange = false;
             playerObj = null;
-            FindObjectOfType<DialogManager>()?.EndDialog();
+            FindFirstObjectByType<DialogManager>()?.EndDialog();
         }
     }
-=======
-            Debug.Log("ไม่ใช่จุดส่งของนี้!");
-            return;
-        }
-
-        PlayerCarry carry = player.GetComponent<PlayerCarry>();
-        Animator anim = player.GetComponent<Animator>(); 
-
-        if (carry != null && carry.carriedItem != null)
-        {
-            RamenLogic ramen = carry.carriedItem.GetComponent<RamenLogic>();
-            float qualityMultiplier = 1f;
-
-            if (ramen != null)
-            {
-                qualityMultiplier = ramen.ramenQuality / 100f;
-                Debug.Log("คุณภาพราเมงตอนส่ง: " + ramen.ramenQuality + "%");
-            }
-
-            int finalReward = Mathf.RoundToInt(DeliveryManager.Instance.rewardMoney * qualityMultiplier);
-            MoneyManager.Instance.AddMoney(finalReward);
-
-            
-            carry.Drop();
-
-            if (anim != null)
-            {
-                anim.SetBool("isCarrying", false);
-                anim.SetBool("IsRiding", false);   
-            }
-
-            DeliveryManager.Instance.CompleteDelivery();
-        }
-    }
->>>>>>> Stashed changes
 }

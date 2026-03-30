@@ -12,7 +12,7 @@ public class BikeCargo : MonoBehaviour
 
         if (carry == null) return;
 
-        
+        // --- ส่วนหยิบของออกจากรถ ---
         if (storedItem != null && !carry.IsCarrying())
         {
             RamenLogic ramen = storedItem.GetComponent<RamenLogic>();
@@ -29,7 +29,7 @@ public class BikeCargo : MonoBehaviour
             return;
         }
 
-        
+        // --- ส่วนเอาของไปวางบนรถ (ยึดตาม Stashed changes) ---
         if (storedItem == null && carry.IsCarrying())
         {
             GameObject item = carry.carriedItem;
@@ -40,32 +40,25 @@ public class BikeCargo : MonoBehaviour
             item.transform.localPosition = Vector3.zero;
             item.transform.localRotation = Quaternion.identity;
 
-<<<<<<< Updated upstream
-            
+            // ตั้งค่าสถานะราเมง
+            RamenLogic ramen = item.GetComponent<RamenLogic>();
+            if (ramen != null) ramen.isOnVehicle = true;
+
+            // Physics: ปิดการชนตามที่เพื่อนเขียนมา (Stashed)
             Rigidbody rb = item.GetComponent<Rigidbody>();
             if (rb)
             {
                 rb.isKinematic = true;
-                rb.detectCollisions = true;
+                rb.detectCollisions = false; // เพื่อนสั่งให้ปิดการตรวจจับการชน
             }
 
             Collider col = item.GetComponent<Collider>();
             if (col)
             {
-                col.enabled = true;
-                col.isTrigger = true;
+                col.enabled = false; // เพื่อนสั่งให้ปิด Collider ไปเลย
             }
 
-=======
->>>>>>> Stashed changes
-            RamenLogic ramen = item.GetComponent<RamenLogic>();
-            if (ramen != null) ramen.isOnVehicle = true;
-
-            Rigidbody rb = item.GetComponent<Rigidbody>();
-            if (rb) { rb.isKinematic = true; rb.detectCollisions = false; }
-            Collider col = item.GetComponent<Collider>();
-            if (col) col.enabled = false;
-
+            // ตั้งค่า Animator
             if (anim != null)
             {
                 anim.SetBool("isCarrying", false);

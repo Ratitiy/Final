@@ -15,7 +15,7 @@ public class PandaDaddyDialog : MonoBehaviour
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            DialogManager manager = FindObjectOfType<DialogManager>();
+            DialogManager manager = FindFirstObjectByType<DialogManager>();
             if (manager != null)
             {
                 if (manager.isDialogActive == false) // ถ้ากล่องข้อความปิดอยู่
@@ -49,7 +49,7 @@ public class PandaDaddyDialog : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-            FindObjectOfType<DialogManager>()?.EndDialog();
+            FindFirstObjectByType<DialogManager>()?.EndDialog();
         }
     }
 }

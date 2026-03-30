@@ -18,7 +18,7 @@ public class PandaDaddy : MonoBehaviour
         // เช็คว่าผู้เล่นอยู่ในระยะ และกดปุ่ม E หรือไม่
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            DialogManager manager = FindObjectOfType<DialogManager>();
+            DialogManager manager = FindAnyObjectByType<DialogManager>();
 
             if (manager != null)
             {
@@ -98,7 +98,7 @@ public class PandaDaddy : MonoBehaviour
         {
             playerInRange = false;
             // เดินหนีปุ๊บ ปิดกล่องคำพูดปั๊บ
-            FindObjectOfType<DialogManager>()?.EndDialog();
+            FindFirstObjectByType<DialogManager>()?.EndDialog();
         }
     }
 }
