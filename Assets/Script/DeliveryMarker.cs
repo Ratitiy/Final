@@ -33,15 +33,17 @@ public class DeliveryMarker : MonoBehaviour
             DeliveryManager.Instance.currentTarget.position - player.position;
         targetDir.y = 0;
 
-        float angle = Vector3.SignedAngle(
-            cameraTransform.forward,
-            targetDir,
-            Vector3.up
+        float angle = Vector3.SignedAngle
+        (
+        player.forward, // ใช้หน้ารถแทนกล้อง
+        targetDir,
+        Vector3.up
         );
 
         transform.localRotation = Quaternion.Euler(0, 0, -angle);
 
-        float dist = Vector3.Distance(
+        float dist = Vector3.Distance
+        (
             player.position,
             DeliveryManager.Instance.currentTarget.position
         );

@@ -24,7 +24,7 @@ EditorBuildSettings:
     path: Assets/_Recovery/0.unity
     guid: 4fe436c48bbd16d4c9dd5fd6f9f2636e
   - enabled: 1
-    path: Assets/Scenes/Neww 1.unity
+    path: Assets/Scenes/Neww.unity
     guid: db04f2ec88082a942a011c8bf0b6690a
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

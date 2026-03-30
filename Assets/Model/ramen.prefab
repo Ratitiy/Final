@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3225443337430741071}
   - component: {fileID: 3321344165688155520}
   - component: {fileID: 1729998766780005047}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ramen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,8 +99,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 5.46, z: 1}
-  m_Center: {x: 0, y: 2.8, z: -0.16}
+  m_Size: {x: 1, y: 6.7, z: 1}
+  m_Center: {x: 0, y: 3.41, z: -0.16}
 --- !u!114 &3321344165688155520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,9 +128,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   qualityDrainRate: 5
+  impactDamage: 10
   spillParticle: {fileID: 8332318863441295377, guid: 99616558cfb8f29449e42c1817fc33a7, type: 3}
-  turnThreshold: 0.5
-  speedThreshold: 0.1
+  qualityText: {fileID: 0}
+  prefix: 'Ramen Quality: '
   ramenQuality: 100
   isOnVehicle: 0
 --- !u!1 &2681782326297041011
@@ -144,7 +145,7 @@ GameObject:
   - component: {fileID: 2247666454750674138}
   - component: {fileID: 8719324048945501397}
   - component: {fileID: 2255170620838484452}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: pCylinder1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +231,7 @@ GameObject:
   - component: {fileID: 2449877569896618667}
   - component: {fileID: 5328382928648217357}
   - component: {fileID: 3874109851669391795}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: pCylinder5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -316,7 +317,7 @@ GameObject:
   - component: {fileID: 6720911539312655770}
   - component: {fileID: 9038251254085866045}
   - component: {fileID: 611577518466637627}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: pCylinder2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -402,7 +403,7 @@ GameObject:
   - component: {fileID: 4338843992413848518}
   - component: {fileID: 3107084595503565574}
   - component: {fileID: 5437879432723756115}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: pCylinder4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -488,7 +489,7 @@ GameObject:
   - component: {fileID: 8787124405467763541}
   - component: {fileID: 1416355156055629637}
   - component: {fileID: 5260057882423201911}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: pCylinder3
   m_TagString: Untagged
   m_Icon: {fileID: 0}

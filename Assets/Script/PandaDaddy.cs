@@ -16,7 +16,7 @@ public class PandaDaddy : MonoBehaviour
     void Update()
     {
         // เช็คว่าผู้เล่นอยู่ในระยะ และกดปุ่ม E หรือไม่
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        if (playerInRange && Input.GetKeyDown(KeyCode.F))
         {
             DialogManager manager = FindAnyObjectByType<DialogManager>();
 
