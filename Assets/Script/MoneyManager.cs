@@ -17,6 +17,10 @@ public class MoneyManager : MonoBehaviour
     public void AddMoney(int amount)
     {
         money += amount;
+
+        
+        if (money < 0) money = 0;
+
         UpdateUI();
     }
 

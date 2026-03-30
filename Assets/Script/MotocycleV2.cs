@@ -26,12 +26,14 @@ public class MotocycleV2 : MonoBehaviour
     public UnityEngine.UI.Image timerCircleImage;   
 
     [Header("Settings")]
-    public float motorTorque = 1500f;
+    public float motorTorque = 500f;
     public float breakTorque = 3000f;
-    public float steeringAngle = 25f;
+    public float steeringAngle = 15f;
     public float centerOfMassOffset = -0.7f;
-    public float maxSpeedKmh = 40f;
-
+    public float maxSpeedKmh = 20f;
+    [Header("Upgrade Limits")]
+    public float minSteering = 15f;
+    public float maxSteering = 25f;
     [Header("Stability Settings")]
     public float stabilitySmoothness = 10f;
     public float tiltAmount = 20f;
@@ -86,6 +88,9 @@ public class MotocycleV2 : MonoBehaviour
         UpdateWheelVisuals();
         ApplyStability();
     }
+    
+
+    
 
     void HandleMotor()
     {
@@ -232,5 +237,22 @@ public class MotocycleV2 : MonoBehaviour
         }
         isControlsInverted = false;
         if (debuffPanel != null) debuffPanel.SetActive(false);
+    }
+   
+    public void UpgradeMaxSpeed(float amount)
+    {
+        maxSpeedKmh += amount;
+    }
+
+    public void UpgradeAcceleration(float amount)
+    {
+        motorTorque += amount; 
+    }
+
+    public void UpgradeSteering(float amount)
+    {
+        steeringAngle += amount;
+       
+        steeringAngle = Mathf.Clamp(steeringAngle, 15f, 25f);
     }
 }
