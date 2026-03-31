@@ -4296,7 +4296,7 @@ GameObject:
   - component: {fileID: 349291912}
   - component: {fileID: 349291911}
   m_Layer: 5
-  m_Name: Upgrade
+  m_Name: UpgradeBike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
