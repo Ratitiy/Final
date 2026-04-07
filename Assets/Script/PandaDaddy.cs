@@ -77,6 +77,7 @@ public class PandaDaddy : MonoBehaviour
 
             // 3. ส่งข้อมูลให้ DeliveryManager เริ่มทำงาน (ส่งของชิ้นนี้ ไปที่ลูกค้าคนนี้)
             DeliveryManager.Instance.StartDelivery(package, selectedTarget.transform);
+            selectedTarget.ShowMarker();
 
             Debug.Log("เริ่มเควสใหม่! ไปส่งของให้: " + selectedTarget.name);
         }

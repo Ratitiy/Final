@@ -1,77 +1,63 @@
 ﻿using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class UpgradeManager : MonoBehaviour
 {
     public MotocycleV2 motor;
     public int upgradeCost = 100;
 
-    [Header("UI Status Text")]
+    [Header("Upgrade Settings")]
+    public int maxUpgradeLevel = 5;
+    private int currentUpgradeCount = 0;
+
+    [Header("UI Progress Bar")]
+    public Image upgradeProgressBar; // ลาก Image ที่เป็นหลอด Fill มาใส่ที่นี่
     public TextMeshProUGUI statusText;
 
-    [Header("Buttons")]
-    public Button steeringButton;
-
-    void Update()
-    {
-        if (motor == null) return;
-
-        // แสดงค่าพลังและราคาปัจจุบัน
-        statusText.text = $"[ Current Stats ]\n" +
-                          $"Max Speed: {motor.maxSpeedKmh:0} KM/H\n" +
-                          $"Accel (Torque): {motor.motorTorque:0}\n" +
-                          $"Steering: {motor.steeringAngle:0} / 25\n" +
-                          $"Next Upgrade Cost: $ {upgradeCost}"; // โชว์ราคาด้วยจะได้รู้
-
-        if (motor.steeringAngle >= 25f)
-        {
-            steeringButton.interactable = false;
-            steeringButton.GetComponentInChildren<TextMeshProUGUI>().text = "STEERING MAX";
-        }
-
-        // --- ลบ upgradeCost = ... ออกจากตรงนี้เด็ดขาด! ---
-    }
-
+    // ฟังก์ชันซื้อ (เรียกจาก Button เหมือนเดิม)
     public void BuyMaxSpeed()
     {
-        if (CanAfford())
+        if (currentUpgradeCount < maxUpgradeLevel && CanAfford())
         {
             MoneyManager.Instance.AddMoney(-upgradeCost);
             motor.UpgradeMaxSpeed(5f);
-            IncreaseCost(); // ซื้อสำเร็จค่อยเพิ่มราคา
+            UpdateProgress();
         }
     }
 
+    // ตัวอย่างของ Acceleration (ทำเหมือนกันทุกปุ่ม)
     public void BuyAcceleration()
     {
-        if (CanAfford())
+        if (currentUpgradeCount < maxUpgradeLevel && CanAfford())
         {
             MoneyManager.Instance.AddMoney(-upgradeCost);
             motor.UpgradeAcceleration(200f);
-            IncreaseCost(); // ซื้อสำเร็จค่อยเพิ่มราคา
+            UpdateProgress();
         }
     }
 
-    public void BuySteering()
+    void UpdateProgress()
     {
-        if (CanAfford() && motor.steeringAngle < 25f)
+        currentUpgradeCount++; // เพิ่มจำนวนครั้ง
+        upgradeCost = (int)(upgradeCost * 1.0f); // เพิ่มราคา
+
+        // --- ส่วนการจัดการหลอด UI ---
+        if (upgradeProgressBar != null)
         {
-            MoneyManager.Instance.AddMoney(-upgradeCost);
-            motor.UpgradeSteering(2f);
-            IncreaseCost(); // ซื้อสำเร็จค่อยเพิ่มราคา
+            // คำนวณเป็น % (0.0 ถึง 1.0)
+            // เช่น อัพ 1 ครั้ง = 1/4 = 0.25 (หลอดขึ้นมา 25%)
+            float progress = (float)currentUpgradeCount / maxUpgradeLevel;
+            upgradeProgressBar.fillAmount = progress;
         }
-    }
 
-    // ฟังก์ชันช่วยเพิ่มราคา (เรียกใช้หลังจากซื้อสำเร็จ)
-    void IncreaseCost()
-    {
-        upgradeCost = (int)(upgradeCost * 1.2f);
+        if (statusText != null)
+            statusText.text = $"Level: {currentUpgradeCount}/{maxUpgradeLevel}";
     }
 
     bool CanAfford()
     {
-        if (MoneyManager.Instance == null) return false;
-        return MoneyManager.Instance.money >= upgradeCost;
+        return MoneyManager.Instance != null && MoneyManager.Instance.money >= upgradeCost;
     }
 }

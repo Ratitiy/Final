@@ -9,6 +9,8 @@ public class DeliveryTarget : MonoBehaviour
     private bool playerInRange = false;
     private GameObject playerObj;
 
+    public GameObject minimapIcon;
+
     void Update()
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.F))
@@ -102,6 +104,7 @@ public class DeliveryTarget : MonoBehaviour
 
         // จบเควสในระบบ Manager
         DeliveryManager.Instance.CompleteDelivery();
+        HideMarker();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -121,5 +124,14 @@ public class DeliveryTarget : MonoBehaviour
             playerObj = null;
             FindFirstObjectByType<DialogManager>()?.EndDialog();
         }
+    }
+    public void ShowMarker()
+    {
+        if (minimapIcon != null) minimapIcon.SetActive(true);
+    }
+
+    public void HideMarker()
+    {
+        if (minimapIcon != null) minimapIcon.SetActive(false);
     }
 }
